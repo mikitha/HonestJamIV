@@ -22,7 +22,7 @@ export default class Game {
         })
 
         window.addEventListener('click', _ev => {
-          this.clickableObjects.filter(co => co.isHovering).forEach(co => co.onClick());
+          this.clickableObjects.filter(co => co.isHovering() && co.isEnabled()).forEach(co => co.onClick());
         });
 
         this.run = this.run.bind(this);
