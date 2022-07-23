@@ -1,33 +1,42 @@
 import Workstation from './Workstation.js';
 import Game from './Game.js';
+import ClickableObject from './ClickableObject.js';
 
 export default class PresserWorkstation implements Workstation {
-  clickableObjects = [];
+  clickableObjects: Array<ClickableObject> = [];
   progress = 0;
   fullProgress = 20;
-  currentCrankPosition = 0;
+  
   lastCrankPosition = 0;
   crankBoundaryTop = 100;
   crankBoundaryBottom = 400;
   crankMovingUp = false
+  isClicked = false
+  crank: Crank;
 
-  constructor(readonly game: Game) {}
+  constructor(readonly game: Game) {
+    this.crank = new Crank(this)
+
+
+  }
 
   tick(_dt: number) {
     //let crankPositionChange = this.game.mouseYPosition - this.lastCrankPosition;
-    this.currentCrankPosition = this.game.mouseYPosition;
-    this.currentCrankPosition = Math.min(this.crankBoundaryBottom, this.currentCrankPosition)
-    this.currentCrankPosition = Math.max(this.crankBoundaryTop, this.currentCrankPosition) 
+    if (this.isClicked){
+    this.crank.position = this.game.mouseYPosition;
+    this.crank.position = Math.min(this.crankBoundaryBottom, this.crank.position);
+    this.crank.position = Math.max(this.crankBoundaryTop, this.crank.position);
+    }
 
     if (this.progress < this.fullProgress){
     
-    if(this.crankBoundaryBottom == this.currentCrankPosition && this.crankMovingUp == false){
+    if(this.crankBoundaryBottom == this.crank.position && this.crankMovingUp == false){
         this.progress += 1
      
         this.crankMovingUp = true
     }
 
-    if(this.crankBoundaryTop == this.currentCrankPosition && this.crankMovingUp == true){
+    if(this.crankBoundaryTop == this.crank.position && this.crankMovingUp == true){
       this.progress += 1
        
         this.crankMovingUp = false
@@ -72,8 +81,47 @@ export default class PresserWorkstation implements Workstation {
   }
 
   drawCrank(ctx: CanvasRenderingContext2D){
-    ctx.fillStyle = "black";
-    ctx.fillRect(400, this.currentCrankPosition, 200, 50);
+    this.crank.draw(ctx)
   }
+}
+
+class Crank implements ClickableObject{
+
+  position
+  
+  constructor(readonly workstation: PresserWorkstation) {
+    this.workstation.clickableObjects.push(this);
+    this.position = this.workstation.crankBoundaryTop;
+  }
+  
+
+  draw(ctx: CanvasRenderingContext2D): void {
+    
+    ctx.fillStyle = "black";
+    ctx.fillRect(400, this.position, 200, 50);
+  }
+  isEnabled(): boolean {
+    return true
+  }
+  isHovering(): boolean {
+    const { mouseXPosition, mouseYPosition } = this.workstation.game;
+    const x = 400;
+    const y = this.position;
+    const w = 200;
+    const h = 50;
+    const mx = mouseXPosition;
+    const my = mouseYPosition;
+    return (
+      mx >= x &&
+      mx < x + w &&
+      my >= y &&
+      my < y + h
+    );
+  }
+  
+  onClick(): void {
+    this.workstation.isClicked = !this.workstation.isClicked
+  }
+  
 }
 
