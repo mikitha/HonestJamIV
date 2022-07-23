@@ -6,7 +6,12 @@ import ClickableObject from './ClickableObject.js'
 export default class IngredientsWorkstation implements Workstation {
   clickableObjects: Array<ClickableObject> = [];
   constructor(readonly game: Game) {
-    const ih = new IngredientHolder(this.game, 200, 200, "yellow", "banana");
+    this.createIngredientHolder(200, 200, "yellow", "banana");
+    this.createIngredientHolder(320, 200, "green", "mustard");
+  }
+
+  createIngredientHolder(x: number, y: number, color: string, name: string) {
+    const ih = new IngredientHolder(this.game, x, y, color, name);
     this.clickableObjects.push(ih.closedDoor);
     this.clickableObjects.push(ih.openedDoor);
     this.clickableObjects.push(ih.ingredient);
@@ -18,9 +23,9 @@ export default class IngredientsWorkstation implements Workstation {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.font = "50pt sans-serif";
+    ctx.font = "30pt sans-serif";
     ctx.fillStyle = "blue";
-    ctx.fillText('Ingredients', 200, 200);
+    ctx.fillText('Ingredients', 200, 100);
 
     this.clickableObjects.filter(co => co.isEnabled()).forEach(co => co.draw(ctx));
   }
@@ -61,7 +66,7 @@ class IngredientDoor implements ClickableObject {
   isEnabled() { return this.enabled; }
 }
 
-class Ingredient extends IngredientDoor {
+class IngredientPile extends IngredientDoor {
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.isHovering() ? "orange" : "green";
     ctx.fillRect(this.x, this.y, this.w, this.h);
@@ -71,7 +76,7 @@ class Ingredient extends IngredientDoor {
 class IngredientHolder {
   closedDoor: IngredientDoor;
   openedDoor: IngredientDoor;
-  ingredient: Ingredient;
+  ingredient: IngredientPile;
 
   constructor(
     readonly game: Game,
@@ -86,7 +91,7 @@ class IngredientHolder {
 
     this.closedDoor = new IngredientDoor(this.game, this.x, this.y, 100, 140, this.openDoor);
     this.openedDoor = new IngredientDoor(this.game, this.x, this.y, 100, 20, this.closeDoor);
-    this.ingredient = new Ingredient(this.game, this.x + 20, this.y + 50, 60, 80, this.gatherIngredient);
+    this.ingredient = new IngredientPile(this.game, this.x + 20, this.y + 50, 60, 80, this.gatherIngredient);
   }
 
   openDoor() {
