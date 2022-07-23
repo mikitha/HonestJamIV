@@ -2,16 +2,16 @@ import Workstation from './Workstation.js';
 import PresserWorkstation from './PresserWorkstation.js';
 import IngredientsWorkstation from './IngredientsWorkstation.js';
 import { isControlPressed, Controls } from './keyboardInput.js';
-import ClickableObject from './ClickableObject.js';
+import Recipe from './Recipe.js';
 
 export default class Game {
     mouseXPosition: number;
     mouseYPosition: number;
 
-    clickableObjects: Array<ClickableObject>;
-
     workstations: Array<Workstation>;
     currentWorkstation: Workstation;
+
+    currentRecipe: Recipe;
 
     constructor(readonly canvas: HTMLCanvasElement){
         this.mouseXPosition = 0
@@ -27,7 +27,7 @@ export default class Game {
 
         this.run = this.run.bind(this);
 
-        this.clickableObjects = [];
+        this.currentRecipe = new Recipe();
 
         this.workstations = [];
         this.workstations.push(new IngredientsWorkstation(this));
