@@ -1,4 +1,4 @@
-console.log("Hello world");
+import Game from "./Game.js";
 
 let canvas: HTMLCanvasElement;
 window.addEventListener('load', async () => {
@@ -7,6 +7,8 @@ window.addEventListener('load', async () => {
   resizeCanvas();
 
   canvas.getContext('2d')?.fillRect(200, 200, 200, 200);
+
+  new Game(canvas).run(0)
 });
 
 function resizeCanvas() {
