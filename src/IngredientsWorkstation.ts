@@ -52,9 +52,7 @@ class IngredientDoor implements ClickableObject {
     public h: number, 
     public ing: Ingredient,
     readonly onClick: () => void,
-  ) {
-    this.game.clickableObjects.push(this);
-  }
+  ) {}
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.isHovering() ? "khaki" : "brown";
@@ -117,7 +115,9 @@ class IngredientHolder {
   }
 
   gatherIngredient() {
-    console.log(`Gathered ${this.ingredient.name}`);
+    this.game.currentRecipe.ingredients.push(this.ingredient);
+    console.log(this.game.currentRecipe.toString());
+    console.log(this.game.currentRecipe.ingredientsList);
   }
 }
 
