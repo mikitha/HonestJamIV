@@ -1,20 +1,30 @@
 import Workstation from './Workstation.js';
 import Game from './Game.js';
 
-import ClickableObject from './ClickableObject.js'
+import ClickableObject from './ClickableObject.js';
+
+import Ingredient, { ingredients } from './Ingredient.js';
 
 export default class IngredientsWorkstation implements Workstation {
   clickableObjects: Array<ClickableObject> = [];
   constructor(readonly game: Game) {
-    this.createIngredientHolder(200, 200, "yellow", "banana");
-    this.createIngredientHolder(320, 200, "green", "mustard");
+    this.createIngredientHolder(200, 200, ingredients.marigold);
+    this.createIngredientHolder(320, 200, ingredients.sunflower);
+    this.createIngredientHolder(440, 200, ingredients.lilac);
+    this.createIngredientHolder(560, 200, ingredients.rose);
+    this.createIngredientHolder(200, 360, ingredients.sage);
+    this.createIngredientHolder(320, 360, ingredients.willow);
+    this.createIngredientHolder(440, 360, ingredients.dogwood);
+    this.createIngredientHolder(560, 360, ingredients.bluebell);
+    this.createIngredientHolder(200, 520, ingredients.lemonBalm);
+    this.createIngredientHolder(320, 520, ingredients.lavender);
   }
 
-  createIngredientHolder(x: number, y: number, color: string, name: string) {
-    const ih = new IngredientHolder(this.game, x, y, color, name);
+  createIngredientHolder(x: number, y: number, ing: Ingredient) {
+    const ih = new IngredientHolder(this.game, x, y, ing);
     this.clickableObjects.push(ih.closedDoor);
     this.clickableObjects.push(ih.openedDoor);
-    this.clickableObjects.push(ih.ingredient);
+    this.clickableObjects.push(ih.ingredientPile);
     ih.closeDoor();
   }
 
@@ -40,13 +50,14 @@ class IngredientDoor implements ClickableObject {
     public y: number, 
     public w: number, 
     public h: number, 
+    public ing: Ingredient,
     readonly onClick: () => void,
   ) {
     this.game.clickableObjects.push(this);
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = this.isHovering() ? "blue" : "red";
+    ctx.fillStyle = this.isHovering() ? "khaki" : "brown";
     ctx.fillRect(this.x, this.y, this.w, this.h);
   }
 
@@ -68,7 +79,7 @@ class IngredientDoor implements ClickableObject {
 
 class IngredientPile extends IngredientDoor {
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = this.isHovering() ? "orange" : "green";
+    ctx.fillStyle = this.ing.colors[0];
     ctx.fillRect(this.x, this.y, this.w, this.h);
   }
 }
@@ -76,38 +87,37 @@ class IngredientPile extends IngredientDoor {
 class IngredientHolder {
   closedDoor: IngredientDoor;
   openedDoor: IngredientDoor;
-  ingredient: IngredientPile;
+  ingredientPile: IngredientPile;
 
   constructor(
     readonly game: Game,
     public x: number,
     public y: number,
-    public color: string,
-    public ingredientName: string,
+    public ingredient: Ingredient,
   ) {
     this.openDoor = this.openDoor.bind(this);
     this.closeDoor = this.closeDoor.bind(this);
     this.gatherIngredient = this.gatherIngredient.bind(this);
 
-    this.closedDoor = new IngredientDoor(this.game, this.x, this.y, 100, 140, this.openDoor);
-    this.openedDoor = new IngredientDoor(this.game, this.x, this.y, 100, 20, this.closeDoor);
-    this.ingredient = new IngredientPile(this.game, this.x + 20, this.y + 50, 60, 80, this.gatherIngredient);
+    this.closedDoor = new IngredientDoor(this.game, this.x, this.y, 100, 140, ingredient, this.openDoor);
+    this.openedDoor = new IngredientDoor(this.game, this.x, this.y, 100, 20, ingredient, this.closeDoor);
+    this.ingredientPile = new IngredientPile(this.game, this.x + 20, this.y + 50, 60, 80, ingredient, this.gatherIngredient);
   }
 
   openDoor() {
     this.closedDoor.enabled = false;
     this.openedDoor.enabled = true;
-    this.ingredient.enabled = true;
+    this.ingredientPile.enabled = true;
   }
 
   closeDoor() {
     this.closedDoor.enabled = true;
     this.openedDoor.enabled = false;
-    this.ingredient.enabled = false;
+    this.ingredientPile.enabled = false;
   }
 
   gatherIngredient() {
-    console.log(`Gathered ${this.ingredientName}`);
+    console.log(`Gathered ${this.ingredient.name}`);
   }
 }
 

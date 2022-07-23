@@ -2,6 +2,7 @@ import Workstation from './Workstation.js';
 import Game from './Game.js';
 
 export default class PresserWorkstation implements Workstation {
+  clickableObjects = [];
 
   constructor(readonly game: Game) {}
 
