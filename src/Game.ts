@@ -2,26 +2,38 @@ import Workstation from './Workstation.js';
 import PresserWorkstation from './PresserWorkstation.js';
 import IngredientsWorkstation from './IngredientsWorkstation.js';
 import { isControlPressed, Controls } from './keyboardInput.js';
+import ClickableObject from './ClickableObject.js';
 
 export default class Game {
+    mouseXPosition: number;
     mouseYPosition: number;
+
+    clickableObjects: Array<ClickableObject>;
 
     workstations: Array<Workstation>;
     currentWorkstation: Workstation;
 
     constructor(readonly canvas: HTMLCanvasElement){
+        this.mouseXPosition = 0
         this.mouseYPosition = 0
         window.addEventListener("mousemove", (event)=>{
+           this.mouseXPosition = this.mouseXPosition + event.movementX
            this.mouseYPosition = this.mouseYPosition + event.movementY
         })
 
+        window.addEventListener('click', _ev => {
+          this.clickableObjects.filter(co => co.isHovering).forEach(co => co.onClick());
+        });
+
         this.run = this.run.bind(this);
+
+        this.clickableObjects = [];
 
         this.workstations = [];
         this.workstations.push(new IngredientsWorkstation(this));
         this.workstations.push(new PresserWorkstation(this));
 
-        this.currentWorkstation = this.workstations[0];
+        this.currentWorkstation = this.workstations[1];
     }
 
     run(_timestamp: number){
