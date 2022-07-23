@@ -16,9 +16,9 @@ export default class Game {
     constructor(readonly canvas: HTMLCanvasElement){
         this.mouseXPosition = 0
         this.mouseYPosition = 0
-        window.addEventListener("mousemove", (event)=>{
-           this.mouseXPosition = this.mouseXPosition + event.movementX
-           this.mouseYPosition = this.mouseYPosition + event.movementY
+        window.addEventListener("mousemove", event =>{
+           this.mouseXPosition = event.clientX;
+           this.mouseYPosition = event.clientY;
         })
 
         window.addEventListener('click', _ev => {
