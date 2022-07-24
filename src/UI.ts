@@ -10,15 +10,15 @@ export default class UI {
 
   prompt?: Prompt;
 
-  leftMargin = 10;
-  bottomMargin = 10;
+  leftTrashcanMargin = 10;
+  bottomTrashcanMargin = 10;
 
   constructor(readonly game: Game) {
     const tci = this.trashcanImage;
     this.trashcan = new RectangularClickableObject(
       this,
-      this.bottomMargin,
-      game.canvas.height - tci.height - this.leftMargin,
+      this.bottomTrashcanMargin,
+      game.canvas.height - tci.height - this.leftTrashcanMargin,
       tci.width,
       tci.height,
       this.clickTrashcan.bind(this)
@@ -46,10 +46,30 @@ export default class UI {
   draw(ctx: CanvasRenderingContext2D) {
     this.drawTrashcan(ctx);
     this.prompt?.draw(ctx);
+    this.drawCurrentRecipe(ctx);
   }
 
   drawTrashcan(ctx: CanvasRenderingContext2D) {
     ctx.drawImage(this.trashcanImage, this.trashcan.x, this.trashcan.y);
+  }
+
+  drawCurrentRecipe(ctx: CanvasRenderingContext2D) {
+    const marginSides = 200;
+    const marginBottom = 50;
+    const height = 100;
+    const recipe = this.game.currentRecipe;
+    const canvas = this.game.canvas;
+    if (recipe.ingredientsList.length < 1) return;
+    const dimensions = [marginSides, canvas.height - marginBottom - height, canvas.width - (2 * marginSides), height] as const;
+    ctx.strokeRect(...dimensions);
+
+    ctx.fillStyle = "ghostwhite";
+    ctx.fillRect(...dimensions);
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "black";
+    ctx.fillText(recipe.toString(), canvas.width / 2, canvas.height - marginBottom - (height / 2), dimensions[2]);
   }
 }
 

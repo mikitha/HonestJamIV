@@ -98,8 +98,6 @@ class IngredientHolder {
 
   gatherIngredient() {
     this.game.currentRecipe.ingredients.push(this.ingredient);
-    console.log(this.game.currentRecipe.toString());
-    console.log(this.game.currentRecipe.ingredientsList);
   }
 }
 
