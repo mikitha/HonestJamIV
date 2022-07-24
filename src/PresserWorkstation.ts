@@ -81,10 +81,10 @@ export default class PresserWorkstation implements Workstation {
    else if(this.progress <= 10){
       ctx.fillStyle = "purple"
     }
-    else if (this.progress <= 15){
+    else if (this.progress <= 19){
       ctx.fillStyle = "blue"
     }
-    else if (this.progress <= 20){
+    else if (this.progress = this.fullProgress){
       ctx.fillStyle = "green"
     }
 

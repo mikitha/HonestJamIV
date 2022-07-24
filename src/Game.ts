@@ -2,6 +2,7 @@ import Workstation from './Workstation.js';
 import PresserWorkstation from './PresserWorkstation.js';
 import IngredientsWorkstation from './IngredientsWorkstation.js';
 import CauldronWorkstation from './CauldronWorkstation.js';
+import SmokerWorkstation from './SmokerWorkstation.js'
 import { isControlPressed, Controls } from './keyboardInput.js';
 import Recipe from './Recipe.js';
 
@@ -14,6 +15,8 @@ export default class Game {
 
     currentRecipe: Recipe;
 
+    lastTimestamp = 0;
+
     constructor(readonly canvas: HTMLCanvasElement){
         this.mouseXPosition = 0
         this.mouseYPosition = 0
@@ -22,8 +25,9 @@ export default class Game {
            this.mouseYPosition = event.clientY;
         })
 
-        window.addEventListener('click', _ev => {
+        window.addEventListener('click', ev => {
           this.currentWorkstation.clickableObjects.filter(co => co.isEnabled() && co.isHovering()).forEach(co => co.onClick());
+          console.log(ev.clientX, ev.clientY)
         });
 
         window.addEventListener('mousedown', _ev => {
@@ -44,6 +48,7 @@ export default class Game {
         this.workstations.push(new IngredientsWorkstation(this));
         this.workstations.push(new PresserWorkstation(this));
         this.workstations.push(new CauldronWorkstation(this));
+        this.workstations.push(new SmokerWorkstation(this));
 
         this.currentWorkstation = this.workstations[1];
     }
@@ -53,7 +58,8 @@ export default class Game {
       this.currentWorkstation = this.workstations[target];
     }
 
-    run(_timestamp: number){
+    run(timestamp: number){
+        const dt = timestamp - this.lastTimestamp
         let ctx = this.canvas.getContext("2d")!;
         if (isControlPressed(Controls.WORKSPACE_1)) {
           this.switchWorkstation(0);
@@ -64,11 +70,16 @@ export default class Game {
         if (isControlPressed(Controls.WORKSPACE_3)) {
           this.switchWorkstation(2);
         }
-        this.currentWorkstation.tick(0);
+        if(isControlPressed(Controls.WORKSPACE_4)){
+            this.switchWorkstation(3)
+        }
+        this.currentWorkstation.tick(dt);
 
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.currentWorkstation.draw(ctx);
+        this.lastTimestamp = timestamp
         window.requestAnimationFrame(this.run);
+
     }
 
 }
