@@ -3,7 +3,9 @@ import ClickableObject from './ClickableObject.js';
 import Game from './Game.js';
 
 export default class CauldronWorkstation implements Workstation {
-  constructor(readonly game: Game) {}
+  constructor(readonly game: Game) {
+    new Spoon();
+  }
   clickableObjects: Array<ClickableObject> = [];
   tick(_dt: number) {}
   draw(_ctx: CanvasRenderingContext2D) {}

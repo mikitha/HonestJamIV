@@ -1,7 +1,7 @@
 import Workstation from './Workstation.js';
 import Game from './Game.js';
 
-import ClickableObject from './ClickableObject.js';
+import ClickableObject, { RectangularClickableObject } from './ClickableObject.js';
 
 import Ingredient, { ingredients } from './Ingredient.js';
 
@@ -41,9 +41,7 @@ export default class IngredientsWorkstation implements Workstation {
   }
 }
 
-class IngredientDoor implements ClickableObject {
-  enabled = false;
-
+class IngredientDoor extends RectangularClickableObject {
   constructor(
     readonly game: Game,
     public x: number, 
@@ -52,27 +50,9 @@ class IngredientDoor implements ClickableObject {
     public h: number, 
     public ing: Ingredient,
     readonly onClick: () => void,
-  ) {}
-
-  draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = this.isHovering() ? "khaki" : "brown";
-    ctx.fillRect(this.x, this.y, this.w, this.h);
+  ) {
+    super(game, x, y, w, h, onClick);
   }
-
-  isHovering() {
-    const { mouseXPosition, mouseYPosition } = this.game;
-    const { x, y, w, h } = this;
-    const mx = mouseXPosition;
-    const my = mouseYPosition;
-    return (
-      mx >= x &&
-      mx < x + w &&
-      my >= y &&
-      my < y + h
-    );
-  }
-
-  isEnabled() { return this.enabled; }
 }
 
 class IngredientPile extends IngredientDoor {

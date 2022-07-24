@@ -1,6 +1,6 @@
 import Workstation from './Workstation.js';
 import Game from './Game.js';
-import ClickableObject from './ClickableObject.js';
+import ClickableObject, { RectangularClickableObject } from './ClickableObject.js';
 
 export default class PresserWorkstation implements Workstation {
   clickableObjects: Array<ClickableObject> = [];
@@ -15,17 +15,19 @@ export default class PresserWorkstation implements Workstation {
   crank: Crank;
 
   constructor(readonly game: Game) {
-    this.crank = new Crank(this)
+    this.crank = new Crank(this, this.onClickCrank.bind(this));
+  }
 
-
+  onClickCrank() {
+    this.isClicked = !this.isClicked;
   }
 
   tick(_dt: number) {
     //let crankPositionChange = this.game.mouseYPosition - this.lastCrankPosition;
     if (this.isClicked){
-    this.crank.position = this.game.mouseYPosition;
-    this.crank.position = Math.min(this.crankBoundaryBottom, this.crank.position);
-    this.crank.position = Math.max(this.crankBoundaryTop, this.crank.position);
+      this.crank.position = this.game.mouseYPosition;
+      this.crank.position = Math.min(this.crankBoundaryBottom, this.crank.position);
+      this.crank.position = Math.max(this.crankBoundaryTop, this.crank.position);
     }
 
     if (this.progress < this.fullProgress){
@@ -88,43 +90,30 @@ export default class PresserWorkstation implements Workstation {
   }
 }
 
-class Crank implements ClickableObject{
+class Crank extends RectangularClickableObject {
 
-  position
+  set position(p: number) {
+    this.y = p;
+  }
+
+  get position() {
+    return this.y;
+  }
   
-  constructor(readonly workstation: PresserWorkstation) {
+  constructor(readonly workstation: PresserWorkstation, readonly onClick: () => void) {
+    const { game, crankBoundaryTop } = workstation;
+    super(game, 400, crankBoundaryTop, 200, 50, onClick);
     this.workstation.clickableObjects.push(this);
     this.position = this.workstation.crankBoundaryTop;
   }
-  
 
   draw(ctx: CanvasRenderingContext2D): void {
-    
     ctx.fillStyle = "black";
-    ctx.fillRect(400, this.position, 200, 50);
+    ctx.fillRect(this.x, this.y, this.w, this.h);
   }
+
   isEnabled(): boolean {
     return true
   }
-  isHovering(): boolean {
-    const { mouseXPosition, mouseYPosition } = this.workstation.game;
-    const x = 400;
-    const y = this.position;
-    const w = 200;
-    const h = 50;
-    const mx = mouseXPosition;
-    const my = mouseYPosition;
-    return (
-      mx >= x &&
-      mx < x + w &&
-      my >= y &&
-      my < y + h
-    );
-  }
-  
-  onClick(): void {
-    this.workstation.isClicked = !this.workstation.isClicked
-  }
-  
 }
 
