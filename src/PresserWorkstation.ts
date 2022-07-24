@@ -25,20 +25,20 @@ export default class PresserWorkstation implements Workstation {
   tick(_dt: number) {
     //let crankPositionChange = this.game.mouseYPosition - this.lastCrankPosition;
     if (this.isClicked){
-      this.crank.position = this.game.mouseYPosition;
-      this.crank.position = Math.min(this.crankBoundaryBottom, this.crank.position);
-      this.crank.position = Math.max(this.crankBoundaryTop, this.crank.position);
+      this.crank.y = this.game.mouseYPosition;
+      this.crank.y = Math.min(this.crankBoundaryBottom, this.crank.y);
+      this.crank.y = Math.max(this.crankBoundaryTop, this.crank.y);
     }
 
     if (this.progress < this.fullProgress){
     
-    if(this.crankBoundaryBottom == this.crank.position && this.crankMovingUp == false){
+    if(this.crankBoundaryBottom == this.crank.y && this.crankMovingUp == false){
         this.progress += 1
      
         this.crankMovingUp = true
     }
 
-    if(this.crankBoundaryTop == this.crank.position && this.crankMovingUp == true){
+    if(this.crankBoundaryTop == this.crank.y && this.crankMovingUp == true){
       this.progress += 1
        
         this.crankMovingUp = false
@@ -91,20 +91,10 @@ export default class PresserWorkstation implements Workstation {
 }
 
 class Crank extends RectangularClickableObject {
-
-  set position(p: number) {
-    this.y = p;
-  }
-
-  get position() {
-    return this.y;
-  }
-  
   constructor(readonly workstation: PresserWorkstation, readonly onClick: () => void) {
     const { game, crankBoundaryTop } = workstation;
     super(game, 400, crankBoundaryTop, 200, 50, onClick);
     this.workstation.clickableObjects.push(this);
-    this.position = this.workstation.crankBoundaryTop;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
