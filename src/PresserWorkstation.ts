@@ -1,11 +1,12 @@
 import Workstation from './Workstation.js';
 import Game from './Game.js';
-import ClickableObject, { RectangularClickableObject } from './ClickableObject.js';
+import ClickableObject from './ClickableObject.js';
+import DraggableObject, { RectangularDraggableObject } from './DraggableObject.js';
 
 export default class PresserWorkstation implements Workstation {
   clickableObjects: Array<ClickableObject> = [];
   draggableObjects = [];
-  currentlyDraggedObjects = [];
+  currentlyDraggedObjects: Array<DraggableObject> = [];
   progress = 0;
   fullProgress = 20;
   
@@ -17,11 +18,15 @@ export default class PresserWorkstation implements Workstation {
   crank: Crank;
 
   constructor(readonly game: Game) {
-    this.crank = new Crank(this, this.onClickCrank.bind(this));
+    this.crank = new Crank(this, this.onMouseDownCrank.bind(this), this.onMouseUpCrank.bind(this));
   }
 
-  onClickCrank() {
-    this.isClicked = !this.isClicked;
+  onMouseDownCrank() {
+    this.isClicked = true;
+  }
+
+  onMouseUpCrank() {
+    this.isClicked = false;
   }
 
   tick(_dt: number) {
@@ -92,9 +97,9 @@ export default class PresserWorkstation implements Workstation {
   }
 }
 
-class Crank extends RectangularClickableObject {
-  constructor(readonly workstation: PresserWorkstation, readonly onClick: () => void) {
-    super(workstation, 400, workstation.crankBoundaryTop, 200, 50, onClick);
+class Crank extends RectangularDraggableObject {
+  constructor(readonly workstation: PresserWorkstation, readonly onMouseDown: () => void, readonly onMouseUp: () => void) {
+    super(workstation, 400, workstation.crankBoundaryTop, 200, 50, onMouseDown, onMouseUp);
   }
 
   draw(ctx: CanvasRenderingContext2D): void {

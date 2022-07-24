@@ -48,16 +48,21 @@ export default class Game {
         this.currentWorkstation = this.workstations[1];
     }
 
+    switchWorkstation(target: number) {
+      if (this.currentWorkstation.currentlyDraggedObjects.length > 0) return;
+      this.currentWorkstation = this.workstations[target];
+    }
+
     run(_timestamp: number){
         let ctx = this.canvas.getContext("2d")!;
         if (isControlPressed(Controls.WORKSPACE_1)) {
-          this.currentWorkstation = this.workstations[0]
+          this.switchWorkstation(0);
         }
         if (isControlPressed(Controls.WORKSPACE_2)) {
-          this.currentWorkstation = this.workstations[1]
+          this.switchWorkstation(1);
         }
         if (isControlPressed(Controls.WORKSPACE_3)) {
-          this.currentWorkstation = this.workstations[2]
+          this.switchWorkstation(2);
         }
         this.currentWorkstation.tick(0);
 
