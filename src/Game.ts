@@ -3,6 +3,8 @@ import PresserWorkstation from './PresserWorkstation.js';
 import IngredientsWorkstation from './IngredientsWorkstation.js';
 import CauldronWorkstation from './CauldronWorkstation.js';
 import SmokerWorkstation from './SmokerWorkstation.js'
+
+import UI from './UI.js';
 import { isControlPressed, Controls } from './keyboardInput.js';
 import Recipe from './Recipe.js';
 
@@ -12,6 +14,8 @@ export default class Game {
 
     workstations: Array<Workstation>;
     currentWorkstation: Workstation;
+
+    ui: UI;
 
     currentRecipe: Recipe;
 
@@ -26,8 +30,9 @@ export default class Game {
         })
 
         window.addEventListener('click', ev => {
+          this.ui.clickableObjects.filter(co => co.isEnabled() && co.isHovering()).forEach(co => co.onClick());
           this.currentWorkstation.clickableObjects.filter(co => co.isEnabled() && co.isHovering()).forEach(co => co.onClick());
-          console.log(ev.clientX, ev.clientY)
+          console.log(`Clicked at x=${ev.clientX}, y=${ev.clientY}`);
         });
 
         window.addEventListener('mousedown', _ev => {
@@ -51,6 +56,8 @@ export default class Game {
         this.workstations.push(new SmokerWorkstation(this));
 
         this.currentWorkstation = this.workstations[1];
+
+        this.ui = new UI(this);
     }
 
     switchWorkstation(target: number) {
@@ -77,9 +84,12 @@ export default class Game {
 
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.currentWorkstation.draw(ctx);
+        this.ui.draw(ctx);
         this.lastTimestamp = timestamp
         window.requestAnimationFrame(this.run);
-
     }
 
+    resetCurrentRecipe() {
+      this.currentRecipe = new Recipe();
+    }
 }

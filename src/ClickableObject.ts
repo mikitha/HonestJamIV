@@ -1,5 +1,6 @@
 import Game from './Game.js';
 import Workstation from './Workstation.js';
+import UI from './UI.js';
 
 export default interface ClickableObject {
   draw(ctx: CanvasRenderingContext2D): void;
@@ -13,7 +14,7 @@ class RectangularClickableObject implements ClickableObject {
   game: Game;
 
   constructor(
-    readonly workstation: Workstation,
+    readonly workstation: Workstation | UI,
     public x: number, 
     public y: number, 
     public w: number, 

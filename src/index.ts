@@ -1,4 +1,5 @@
 import Game from "./Game.js";
+import { load as loadImages } from './images.js';
 
 let canvas: HTMLCanvasElement;
 window.addEventListener('load', async () => {
@@ -6,7 +7,7 @@ window.addEventListener('load', async () => {
   document.body.appendChild(canvas);
   resizeCanvas();
 
-  canvas.getContext('2d')?.fillRect(200, 200, 200, 200);
+  await loadImages();
 
   new Game(canvas).run(0)
 });
