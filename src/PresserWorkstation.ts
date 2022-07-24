@@ -45,6 +45,9 @@ export default class PresserWorkstation implements Workstation {
     if(this.progress == this.fullProgress){
 
     console.log("done!")
+    this.game.currentRecipe.pressed = true
+    console.log(this.game.currentRecipe.toString())
+    console.log(this.game.currentRecipe)
     }
   }
 }
