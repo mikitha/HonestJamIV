@@ -7,6 +7,8 @@ import Ingredient, { ingredients } from './Ingredient.js';
 
 export default class IngredientsWorkstation implements Workstation {
   clickableObjects: Array<ClickableObject> = [];
+  draggableObjects = [];
+  currentlyDraggedObjects = [];
   constructor(readonly game: Game) {
     this.createIngredientHolder(200, 200, ingredients.marigold);
     this.createIngredientHolder(320, 200, ingredients.sunflower);

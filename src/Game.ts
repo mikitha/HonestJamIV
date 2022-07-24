@@ -23,7 +23,17 @@ export default class Game {
         })
 
         window.addEventListener('click', _ev => {
-          this.currentWorkstation.clickableObjects.filter(co => co.isHovering() && co.isEnabled()).forEach(co => co.onClick());
+          this.currentWorkstation.clickableObjects.filter(co => co.isEnabled() && co.isHovering()).forEach(co => co.onClick());
+        });
+
+        window.addEventListener('mousedown', _ev => {
+          this.currentWorkstation.currentlyDraggedObjects = this.currentWorkstation.draggableObjects.filter(dgo => dgo.isEnabled() && dgo.isHovering());
+          this.currentWorkstation.currentlyDraggedObjects.forEach(dgo => dgo.onMouseDown());
+        });
+
+        window.addEventListener('mouseup', _ev => {
+          this.currentWorkstation.currentlyDraggedObjects.forEach(dgo => dgo.onMouseUp());
+          this.currentWorkstation.currentlyDraggedObjects = [];
         });
 
         this.run = this.run.bind(this);

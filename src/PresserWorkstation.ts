@@ -4,6 +4,8 @@ import ClickableObject, { RectangularClickableObject } from './ClickableObject.j
 
 export default class PresserWorkstation implements Workstation {
   clickableObjects: Array<ClickableObject> = [];
+  draggableObjects = [];
+  currentlyDraggedObjects = [];
   progress = 0;
   fullProgress = 20;
   

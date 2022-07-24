@@ -7,6 +7,8 @@ export default class CauldronWorkstation implements Workstation {
     new Spoon();
   }
   clickableObjects: Array<ClickableObject> = [];
+  draggableObjects = [];
+  currentlyDraggedObjects = [];
   tick(_dt: number) {}
   draw(_ctx: CanvasRenderingContext2D) {}
 }
