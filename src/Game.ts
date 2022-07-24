@@ -1,6 +1,7 @@
 import Workstation from './Workstation.js';
 import PresserWorkstation from './PresserWorkstation.js';
 import IngredientsWorkstation from './IngredientsWorkstation.js';
+import CauldronWorkstation from './CauldronWorkstation.js';
 import { isControlPressed, Controls } from './keyboardInput.js';
 import Recipe from './Recipe.js';
 
@@ -32,6 +33,7 @@ export default class Game {
         this.workstations = [];
         this.workstations.push(new IngredientsWorkstation(this));
         this.workstations.push(new PresserWorkstation(this));
+        this.workstations.push(new CauldronWorkstation(this));
 
         this.currentWorkstation = this.workstations[1];
     }
@@ -43,6 +45,9 @@ export default class Game {
         }
         if (isControlPressed(Controls.WORKSPACE_2)) {
           this.currentWorkstation = this.workstations[1]
+        }
+        if (isControlPressed(Controls.WORKSPACE_3)) {
+          this.currentWorkstation = this.workstations[2]
         }
         this.currentWorkstation.tick(0);
 
