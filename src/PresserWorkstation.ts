@@ -92,9 +92,7 @@ export default class PresserWorkstation implements Workstation {
 
 class Crank extends RectangularClickableObject {
   constructor(readonly workstation: PresserWorkstation, readonly onClick: () => void) {
-    const { game, crankBoundaryTop } = workstation;
-    super(game, 400, crankBoundaryTop, 200, 50, onClick);
-    this.workstation.clickableObjects.push(this);
+    super(workstation, 400, workstation.crankBoundaryTop, 200, 50, onClick);
   }
 
   draw(ctx: CanvasRenderingContext2D): void {

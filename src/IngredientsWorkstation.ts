@@ -21,10 +21,7 @@ export default class IngredientsWorkstation implements Workstation {
   }
 
   createIngredientHolder(x: number, y: number, ing: Ingredient) {
-    const ih = new IngredientHolder(this.game, x, y, ing);
-    this.clickableObjects.push(ih.closedDoor);
-    this.clickableObjects.push(ih.openedDoor);
-    this.clickableObjects.push(ih.ingredientPile);
+    const ih = new IngredientHolder(this, x, y, ing);
     ih.closeDoor();
   }
 
@@ -43,7 +40,7 @@ export default class IngredientsWorkstation implements Workstation {
 
 class IngredientDoor extends RectangularClickableObject {
   constructor(
-    readonly game: Game,
+    readonly workstation: Workstation,
     public x: number, 
     public y: number, 
     public w: number, 
@@ -51,7 +48,7 @@ class IngredientDoor extends RectangularClickableObject {
     public ing: Ingredient,
     readonly onClick: () => void,
   ) {
-    super(game, x, y, w, h, onClick);
+    super(workstation, x, y, w, h, onClick);
   }
 }
 
@@ -63,23 +60,26 @@ class IngredientPile extends IngredientDoor {
 }
 
 class IngredientHolder {
+  game: Game;
   closedDoor: IngredientDoor;
   openedDoor: IngredientDoor;
   ingredientPile: IngredientPile;
 
   constructor(
-    readonly game: Game,
+    readonly workstation: Workstation,
     public x: number,
     public y: number,
     public ingredient: Ingredient,
   ) {
+    this.game = this.workstation.game;
+
     this.openDoor = this.openDoor.bind(this);
     this.closeDoor = this.closeDoor.bind(this);
     this.gatherIngredient = this.gatherIngredient.bind(this);
 
-    this.closedDoor = new IngredientDoor(this.game, this.x, this.y, 100, 140, ingredient, this.openDoor);
-    this.openedDoor = new IngredientDoor(this.game, this.x, this.y, 100, 20, ingredient, this.closeDoor);
-    this.ingredientPile = new IngredientPile(this.game, this.x + 20, this.y + 50, 60, 80, ingredient, this.gatherIngredient);
+    this.closedDoor = new IngredientDoor(workstation, this.x, this.y, 100, 140, ingredient, this.openDoor);
+    this.openedDoor = new IngredientDoor(workstation, this.x, this.y, 100, 20, ingredient, this.closeDoor);
+    this.ingredientPile = new IngredientPile(workstation, this.x + 20, this.y + 50, 60, 80, ingredient, this.gatherIngredient);
   }
 
   openDoor() {

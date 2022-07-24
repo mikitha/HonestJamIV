@@ -1,4 +1,5 @@
 import Game from './Game.js';
+import Workstation from './Workstation.js';
 
 export default interface ClickableObject {
   draw(ctx: CanvasRenderingContext2D): void;
@@ -9,15 +10,19 @@ export default interface ClickableObject {
 
 class RectangularClickableObject implements ClickableObject {
   enabled = false;
+  game: Game;
 
   constructor(
-    readonly game: Game,
+    readonly workstation: Workstation,
     public x: number, 
     public y: number, 
     public w: number, 
     public h: number, 
     readonly onClick: () => void,
-  ) {}
+  ) {
+    this.game = workstation.game;
+    this.workstation.clickableObjects.push(this);
+  }
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.isHovering() ? "khaki" : "brown";
