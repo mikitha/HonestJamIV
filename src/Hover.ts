@@ -12,6 +12,7 @@ export default class Hover {
     ctx.font = "20px sans-serif";
     ctx.textAlign = "center";
     ctx.fillStyle = "white";
+    ctx.textBaseline = "middle";
     ctx.fillText(this.text, this.game.mouseXPosition + this.width / 2, this.game.mouseYPosition + this.height / 2, this.width)
   }
 }
