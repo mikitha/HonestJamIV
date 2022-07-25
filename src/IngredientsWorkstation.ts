@@ -1,5 +1,6 @@
 import Workstation from './Workstation.js';
 import Game from './Game.js';
+import Hover from './Hover.js';
 
 import ClickableObject, { RectangularClickableObject } from './ClickableObject.js';
 
@@ -52,6 +53,7 @@ class IngredientDoor extends RectangularClickableObject {
     readonly onClick: () => void,
   ) {
     super(workstation, x, y, w, h, onClick);
+    this.hover = new Hover(workstation.game, ing.description);
   }
 }
 

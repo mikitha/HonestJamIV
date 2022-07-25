@@ -1,17 +1,20 @@
 import Game from './Game.js';
 import Workstation from './Workstation.js';
 import UI from './UI.js';
+import Hover from './Hover.js';
 
 export default interface ClickableObject {
   draw(ctx: CanvasRenderingContext2D): void;
   isEnabled(): boolean;
   isHovering(): boolean;
   onClick(): void;
+  hover?: Hover;
 }
 
 class RectangularClickableObject implements ClickableObject {
   enabled = false;
   game: Game;
+  hover?: Hover;
 
   constructor(
     readonly workstation: Workstation | UI,

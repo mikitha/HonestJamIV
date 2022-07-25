@@ -95,6 +95,7 @@ export default class Game {
 
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.currentWorkstation.draw(ctx);
+        this.currentWorkstation.clickableObjects.filter(co => co.isEnabled() && co.isHovering()).forEach(co => co.hover?.draw(ctx));
         this.ui.draw(ctx);
         this.lastTimestamp = timestamp
         window.requestAnimationFrame(this.run);

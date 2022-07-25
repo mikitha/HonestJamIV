@@ -2,6 +2,7 @@ import Workstation from './Workstation.js';
 import Game from './Game.js';
 import ClickableObject, { RectangularClickableObject } from './ClickableObject.js';
 import DraggableObject from './DraggableObject.js';
+import Hover from './Hover.js';
 
 export default class SmokerWorkstation implements Workstation {
     clickableObjects: Array<ClickableObject> = [];
@@ -24,6 +25,7 @@ export default class SmokerWorkstation implements Workstation {
       this.smoker = new Smoker(this, this.clickSmoker.bind(this));
       this.startButton = new RectangularClickableObject(this, 20, 560, 100, 30, this.startSmoking.bind(this))
       this.startButton.isEnabled = () => true
+      this.startButton.hover = new Hover(this.game, "Start the smoker");
     }
   
     startSmoking() {
