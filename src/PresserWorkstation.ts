@@ -70,6 +70,8 @@ export default class PresserWorkstation implements Workstation {
     ctx.moveTo(400, this.crankBoundaryBottom)
     ctx.lineTo(600, this.crankBoundaryBottom)
     ctx.stroke(); 
+
+    this.game.currentRecipe.draw(ctx, 150, 400);
   }
 
   drawProgress(ctx: CanvasRenderingContext2D){

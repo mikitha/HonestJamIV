@@ -29,6 +29,7 @@ export default class CauldronWorkstation implements Workstation {
 
   draw(ctx: CanvasRenderingContext2D) {
     this.spoon.draw(ctx);
+    this.game.currentRecipe.draw(ctx, 400, 500);
   }
 }
 

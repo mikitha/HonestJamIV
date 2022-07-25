@@ -46,6 +46,7 @@ export default class SmokerWorkstation implements Workstation {
       this.drawProgress(ctx);
     
       this.startButton.draw(ctx);
+      this.game.currentRecipe.draw(ctx, 150, 400);
     }
   
     drawProgress(ctx: CanvasRenderingContext2D){

@@ -37,6 +37,7 @@ export default class IngredientsWorkstation implements Workstation {
     ctx.fillText('Ingredients', 200, 100);
 
     this.clickableObjects.filter(co => co.isEnabled()).forEach(co => co.draw(ctx));
+    this.game.currentRecipe.draw(ctx, 700, 500);
   }
 }
 
@@ -97,7 +98,7 @@ class IngredientHolder {
   }
 
   gatherIngredient() {
-    this.game.currentRecipe.ingredients.push(this.ingredient);
+    this.game.currentRecipe.addIngredient(this.ingredient);
   }
 }
 

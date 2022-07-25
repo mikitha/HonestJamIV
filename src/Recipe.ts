@@ -1,11 +1,13 @@
 import Ingredient from './Ingredient.js';
+import { chooseRandom, shuffle } from './util.js';
 enum StirDirection {
   CLOCKWISE,
   COUNTERCLOCKWISE,
 }
 
 export default class Recipe {
-  ingredients: Array<Ingredient> = [];
+  private ingredients: Array<Ingredient> = [];
+  ingredientPositions: Array<IngredientPosition> = [];
   pressed = false;
   smoked = false;
   stirred : StirDirection | null = null;
@@ -44,5 +46,33 @@ export default class Recipe {
   toString() {
     if (!this.stirred) return `Potion of ${this.smokedModifier}${this.pressedModifier}${this.effectsList}`;
     return this.ingredientsList;
+  }
+
+  positionsPerIngredient = 5;
+  spreadX = 100;
+  spreadY = 50;
+  addIngredient(ingredient: Ingredient) {
+    this.ingredients.push(ingredient);
+    for(let i = 0; i < this.positionsPerIngredient; i++) {
+      this.ingredientPositions.push(new IngredientPosition(ingredient, Math.random() * this.spreadX, Math.random() * this.spreadY));
+    }
+    shuffle(this.ingredientPositions);
+  }
+
+  draw(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    this.ingredientPositions.forEach(ip => ip.draw(ctx, x, y));
+  }
+}
+
+class IngredientPosition {
+  color: string;
+  size = 25;
+  constructor(readonly ingredient: Ingredient, readonly x: number, readonly y: number) {
+    this.color = chooseRandom(ingredient.colors);
+  }
+
+  draw(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = this.ingredient.colors[0];
+    ctx.fillRect(this.x + x, this.y + y, this.size, this.size);
   }
 }
