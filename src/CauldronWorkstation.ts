@@ -2,6 +2,7 @@ import Workstation from './Workstation.js';
 import ClickableObject from './ClickableObject.js';
 import DraggableObject, { RectangularDraggableObject } from './DraggableObject.js';
 import Game from './Game.js';
+import { StirDirection } from './Recipe.js';
 
 export default class CauldronWorkstation implements Workstation {
   spoonOffsetX = 0;
@@ -14,6 +15,8 @@ export default class CauldronWorkstation implements Workstation {
   maxCenterPositions = 50;
 
   quadrant = 0;
+
+  started = true;
 
   constructor(readonly game: Game) {
     this.spoon = new Spoon(this, this.onMouseDownSpoon.bind(this), () => {});
@@ -34,29 +37,42 @@ export default class CauldronWorkstation implements Workstation {
       cdo.y = mouseY + this.spoonOffsetY;
     });
 
-    if (this.currentlyDraggedObjects.includes(this.spoon)) {
-      this.centerPositions.unshift([mouseX, mouseY]);
-      this.centerPositions = this.centerPositions.slice(0, 50);
+    if (this.started) {
+      if (this.currentlyDraggedObjects.includes(this.spoon)) {
+        this.centerPositions.unshift([mouseX, mouseY]);
+        this.centerPositions = this.centerPositions.slice(0, 50);
 
-      this.center = this.centerPositions.reduce((acc, n) => {
-        return [acc[0] + (n[0] / this.centerPositions.length), acc[1] + (n[1] / this.centerPositions.length)]
-      } ,[0, 0]);
-      let quadrant;
-      if (mouseY < this.center[1]) {
-        quadrant = mouseX > this.center[0] ? 0 : 1;
-      } else {
-        quadrant = mouseX > this.center[0] ? 3 : 2;
-      }
+        this.center = this.centerPositions.reduce((acc, n) => {
+          return [acc[0] + (n[0] / this.centerPositions.length), acc[1] + (n[1] / this.centerPositions.length)]
+        } ,[0, 0]);
+        let quadrant;
+        if (mouseY < this.center[1]) {
+          quadrant = mouseX > this.center[0] ? 0 : 1;
+        } else {
+          quadrant = mouseX > this.center[0] ? 3 : 2;
+        }
 
-      if (quadrant === this.quadrant) {}
-      else if (quadrant > this.quadrant || (quadrant === 0 && this.quadrant === 3)) {
-        this.progress += 1;
+        if (quadrant === this.quadrant) {}
+        else if ((4 + quadrant - this.quadrant) % 4 === 1) {
+          this.progress -= 5;
+        } else {
+          this.progress += 5;
+        }
+        this.quadrant = quadrant;
       } else {
-        this.progress -= 1;
+        this.progress -= Math.sign(this.progress) * .5
+        this.centerPositions = [];
       }
-      this.quadrant = quadrant;
-    } else {
-      this.centerPositions = [];
+    }
+
+    if (this.progress > 300) {
+      this.progress = 300;
+      this.game.currentRecipe.stirred = StirDirection.CLOCKWISE;
+      this.started = false;
+    } else if (this.progress < -300) {
+      this.progress = -300;
+      this.game.currentRecipe.stirred = StirDirection.COUNTERCLOCKWISE;
+      this.started = false;
     }
   }
 
@@ -65,8 +81,15 @@ export default class CauldronWorkstation implements Workstation {
     ctx.fillStyle = "red";
     ctx.beginPath();
     ctx.arc(this.center[0], this.center[1], 25, 0, 2 * Math.PI);
-    ctx.fill();
+    //ctx.fill();
     this.game.currentRecipe.draw(ctx, 400, 500);
+    this.drawProgressBar(ctx);
+  }
+
+  drawProgressBar(ctx: CanvasRenderingContext2D) {
+    ctx.strokeRect(200, 50, 600, 50);
+    ctx.fillStyle = this.progress > 0 ? "green" : "red";
+    ctx.fillRect(500, 50, this.progress, 50);
   }
 }
 

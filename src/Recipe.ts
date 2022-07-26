@@ -76,3 +76,5 @@ class IngredientPosition {
     ctx.fillRect(this.x + x, this.y + y, this.size, this.size);
   }
 }
+
+export { StirDirection }
