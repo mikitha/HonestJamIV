@@ -1,4 +1,6 @@
 {
+  "potion-bottle-empty": "images/potion-bottle-empty.png",
+  "potion-white": "images/potion-white.png",
   "ui": {
     "trashcan": "images/ui/trashcan.png"
   }

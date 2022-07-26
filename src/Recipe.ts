@@ -1,5 +1,7 @@
 import Ingredient from './Ingredient.js';
 import { chooseRandom, shuffle } from './util.js';
+import images from './images.js';
+
 enum StirDirection {
   CLOCKWISE,
   COUNTERCLOCKWISE,
@@ -77,4 +79,39 @@ class IngredientPosition {
   }
 }
 
-export { StirDirection }
+function splitColor(color: string): [number, number, number] {
+  const red = parseInt(color.slice(1, 3), 16) / 255;
+  const green = parseInt(color.slice(3, 5), 16) / 255;
+  const blue = parseInt(color.slice(5, 7), 16) / 255;
+  return [red, green, blue];
+}
+
+const potionImages: {[key in string]: HTMLImageElement} = {};
+function potionImage(color: string): HTMLImageElement {
+  if (potionImages[color]) return potionImages[color];
+  const time = new Date().getMilliseconds();
+  const source = images('potion-white');
+  const canvas = document.createElement('canvas');
+  canvas.width = source.width;
+  canvas.height = source.height;
+  const ctx = canvas.getContext('2d')!;
+  ctx.drawImage(source,0,0, 64, 64);
+  const whiteImageData = ctx.getImageData(0,0,64,64);
+  const colorImageData = ctx.createImageData(whiteImageData);
+  console.log(whiteImageData.data.length)
+  const [r, g, b] = splitColor(color);
+  for (let i = 0; i < whiteImageData.data.length; i+= 4) {
+    colorImageData.data[i] = whiteImageData.data[i] * r;
+    colorImageData.data[i+1] = whiteImageData.data[i+1] * g;
+    colorImageData.data[i+2] = whiteImageData.data[i+2] * b;
+    colorImageData.data[i+3] = whiteImageData.data[i+3];
+  }
+  console.log(`Generated ${color} in ${new Date().getMilliseconds() - time}ms`);
+  ctx.putImageData(colorImageData, 0, 0)
+  const img = new Image();
+  img.src = canvas.toDataURL();
+  potionImages[color] = img;
+  return img;
+}
+
+export { StirDirection, potionImage }

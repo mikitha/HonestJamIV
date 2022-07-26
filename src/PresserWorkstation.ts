@@ -3,6 +3,9 @@ import Game from './Game.js';
 import ClickableObject from './ClickableObject.js';
 import DraggableObject, { RectangularDraggableObject } from './DraggableObject.js';
 
+import images from './images.js';
+import { potionImage } from './Recipe.js';
+
 export default class PresserWorkstation implements Workstation {
   clickableObjects: Array<ClickableObject> = [];
   draggableObjects = [];
@@ -72,6 +75,13 @@ export default class PresserWorkstation implements Workstation {
     ctx.stroke(); 
 
     this.game.currentRecipe.draw(ctx, 150, 400);
+
+    ctx.fillStyle = "brown";
+    ctx.fillRect(100, 100, 64, 64);
+
+    ctx.drawImage(potionImage("#5599FF"), 100, 100);
+
+    ctx.drawImage(images('potion-bottle-empty'), 100, 100);
   }
 
   drawProgress(ctx: CanvasRenderingContext2D){
