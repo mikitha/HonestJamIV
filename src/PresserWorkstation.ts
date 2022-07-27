@@ -76,10 +76,13 @@ export default class PresserWorkstation implements Workstation {
 
     this.game.currentRecipe.draw(ctx, 150, 400);
 
-    ctx.fillStyle = "brown";
-    ctx.fillRect(100, 100, 64, 64);
+    ctx.fillStyle = "lightgrey";
+    ctx.fillRect(100, 100, 128, 128);
 
-    ctx.drawImage(potionImage("#5599FF"), 100, 100);
+    ctx.drawImage(potionImage("#559900", 'potion-white', 'potion-bottle-empty'), 100, 100);
+    ctx.drawImage(potionImage("#EE2277", 'potion-white', 'potion-bottle-empty'), 100, 164);
+    ctx.drawImage(potionImage("#88AA22", 'potion-white', 'potion-bottle-empty'), 164, 100);
+    ctx.drawImage(potionImage("#884411", 'potion-white', 'potion-bottle-empty'), 164, 164);
 
     ctx.drawImage(images('potion-bottle-empty'), 100, 100);
   }

@@ -87,18 +87,17 @@ function splitColor(color: string): [number, number, number] {
 }
 
 const potionImages: {[key in string]: HTMLImageElement} = {};
-function potionImage(color: string): HTMLImageElement {
+function potionImage(color: string, potionImageName: string, bottleImageName: string): HTMLImageElement {
   if (potionImages[color]) return potionImages[color];
   const time = new Date().getMilliseconds();
-  const source = images('potion-white');
+  const source = images(potionImageName);
   const canvas = document.createElement('canvas');
   canvas.width = source.width;
   canvas.height = source.height;
   const ctx = canvas.getContext('2d')!;
-  ctx.drawImage(source,0,0, 64, 64);
-  const whiteImageData = ctx.getImageData(0,0,64,64);
+  ctx.drawImage(source,0,0, canvas.width, canvas.width);
+  const whiteImageData = ctx.getImageData(0,0,canvas.width,canvas.width);
   const colorImageData = ctx.createImageData(whiteImageData);
-  console.log(whiteImageData.data.length)
   const [r, g, b] = splitColor(color);
   for (let i = 0; i < whiteImageData.data.length; i+= 4) {
     colorImageData.data[i] = whiteImageData.data[i] * r;
@@ -106,8 +105,9 @@ function potionImage(color: string): HTMLImageElement {
     colorImageData.data[i+2] = whiteImageData.data[i+2] * b;
     colorImageData.data[i+3] = whiteImageData.data[i+3];
   }
-  console.log(`Generated ${color} in ${new Date().getMilliseconds() - time}ms`);
+  console.log(`Generated ${color}/${potionImageName}/${bottleImageName} in ${new Date().getMilliseconds() - time}ms`);
   ctx.putImageData(colorImageData, 0, 0)
+  ctx.drawImage(images(bottleImageName), 0, 0);
   const img = new Image();
   img.src = canvas.toDataURL();
   potionImages[color] = img;
