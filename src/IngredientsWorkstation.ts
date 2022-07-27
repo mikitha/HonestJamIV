@@ -6,10 +6,14 @@ import ClickableObject, { RectangularClickableObject } from './ClickableObject.j
 
 import Ingredient, { ingredients } from './Ingredient.js';
 
+import { chooseRandom, lerp } from './util.js';
+
 export default class IngredientsWorkstation implements Workstation {
   clickableObjects: Array<ClickableObject> = [];
   draggableObjects = [];
   currentlyDraggedObjects = [];
+
+  ingredientTrails: Array<IngredientTrail> = [];
   constructor(readonly game: Game) {
     this.createIngredientHolder(200, 200, ingredients.marigold);
     this.createIngredientHolder(320, 200, ingredients.sunflower);
@@ -28,8 +32,10 @@ export default class IngredientsWorkstation implements Workstation {
     ih.closeDoor();
   }
 
-  tick(_dt: number) {
+  tick(dt: number) {
     //this.clickableObjects.forEach(co => co.tick(_dt));
+    this.ingredientTrails.forEach(it => it.tick(dt));
+    this.ingredientTrails = this.ingredientTrails.filter(it => it.enabled);
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -39,6 +45,8 @@ export default class IngredientsWorkstation implements Workstation {
 
     this.clickableObjects.filter(co => co.isEnabled()).forEach(co => co.draw(ctx));
     this.game.currentRecipe.draw(ctx, 700, 500);
+
+    this.ingredientTrails.forEach(it => it.draw(ctx));
   }
 }
 
@@ -71,7 +79,7 @@ class IngredientHolder {
   ingredientPile: IngredientPile;
 
   constructor(
-    readonly workstation: Workstation,
+    readonly workstation: IngredientsWorkstation,
     public x: number,
     public y: number,
     public ingredient: Ingredient,
@@ -101,6 +109,83 @@ class IngredientHolder {
 
   gatherIngredient() {
     this.game.currentRecipe.addIngredient(this.ingredient);
+
+    const ip = this.ingredientPile;
+    const it = new IngredientTrail(ip.x + (ip.w / 2), 800, ip.y + (ip.h / 2), 550, this.ingredient);
+    this.workstation.ingredientTrails.push(it);
   }
 }
 
+class IngredientTrail {
+  progress = 0;
+  speed = 0.0015;
+  enabled = true;
+  x: number;
+  y: number;
+  particles: Array<IngredientTrailParticle> = [];
+  constructor(
+    readonly startX: number,
+    readonly endX: number,
+    readonly startY: number,
+    readonly endY: number,
+    readonly ingredient: Ingredient,
+  ) {
+    this.x = startX;
+    this.y = startY;
+  }
+
+  tick(dt: number) {
+    if (!this.enabled) return;
+    this.progress += dt * this.speed;
+    this.x = lerp(this.startX, this.endX, this.progress);
+    this.y = lerp(this.startY, this.endY, this.progress);
+
+    this.particles.push(new IngredientTrailParticle(this.x, this.y, this.ingredient));
+    this.particles.forEach(p => p.tick(dt));
+    this.particles = this.particles.filter(p => p.enabled);
+
+    if (this.progress > 1) {
+      this.progress = 1;
+      this.enabled = false;
+    }
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    if (!this.enabled) return;
+    this.particles.forEach(p => p.draw(ctx));
+  }
+}
+
+class IngredientTrailParticle {
+  direction: number;
+  enabled = true;
+  speed = 0.15;
+  constructor(
+    private x: number,
+    private y: number,
+    readonly ingredient: Ingredient,
+    private duration: number = 150,
+  ) {
+    this.direction = Math.random() * Math.PI * 2;
+  }
+
+  draw(ctx:CanvasRenderingContext2D) {
+    if (!this.enabled) return;
+    ctx.fillStyle = chooseRandom(this.ingredient.colors);
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 5, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  tick(dt: number) {
+    if (!this.enabled) return;
+    this.duration -= dt;
+    this.x += Math.cos(this.direction * dt) * this.speed * dt;
+    this.y += Math.sin(this.direction) * this.speed * dt;
+    if (this.duration < 0) {
+      this.duration = 0;
+      this.enabled = false;
+    }
+  }
+
+}

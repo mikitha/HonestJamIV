@@ -9,4 +9,8 @@ function shuffle<T>(array: Array<T>): void {
   }
 }
 
-export { chooseRandom, shuffle }
+function lerp(start: number, end: number, progress: number) {
+  return start + (progress * (end - start));
+}
+
+export { chooseRandom, shuffle, lerp }
