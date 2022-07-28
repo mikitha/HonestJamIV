@@ -46,8 +46,8 @@ export default class Recipe {
   }
 
   toString() {
-    if (!this.stirred) return `Potion of ${this.smokedModifier}${this.pressedModifier}${this.effectsList}`;
-    return this.ingredientsList;
+    return `Potion of ${this.smokedModifier}${this.pressedModifier}${this.effectsList}
+${this.pressed && this.stirred == undefined ? ", pressed" : ""}${this.smoked && this.stirred == undefined ? ", smoked" : ""}`;
   }
 
   positionsPerIngredient = 5;
