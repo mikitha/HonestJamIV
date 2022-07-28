@@ -19,6 +19,8 @@ export default class Game {
 
     currentRecipe: Recipe;
 
+    busy = false;
+
     lastTimestamp = 0;
 
     constructor(readonly canvas: HTMLCanvasElement){
@@ -71,7 +73,7 @@ export default class Game {
     }
 
     switchWorkstation(target: number) {
-      if (this.ui.prompt) return;
+      if (this.ui.prompt || this.busy) return;
       if (this.currentWorkstation.currentlyDraggedObjects.length > 0) return;
       this.currentWorkstation = this.workstations[target];
     }

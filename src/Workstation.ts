@@ -8,7 +8,7 @@ interface Workstation {
   clickableObjects: Array<ClickableObject>,
   draggableObjects: Array<DraggableObject>,
   currentlyDraggedObjects: Array<DraggableObject>,
-  game: Game;
+  game: Game,
 }
 
 export default Workstation;

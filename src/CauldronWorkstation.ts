@@ -74,6 +74,8 @@ export default class CauldronWorkstation implements Workstation {
       this.game.currentRecipe.stirred = StirDirection.COUNTERCLOCKWISE;
       this.started = false;
     }
+
+    this.game.busy = (this.progress > -300 && this.progress < 300) && this.progress !== 0;
   }
 
   draw(ctx: CanvasRenderingContext2D) {

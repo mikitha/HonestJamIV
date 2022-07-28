@@ -36,6 +36,7 @@ export default class IngredientsWorkstation implements Workstation {
     //this.clickableObjects.forEach(co => co.tick(_dt));
     this.ingredientTrails.forEach(it => it.tick(dt));
     this.ingredientTrails = this.ingredientTrails.filter(it => it.enabled);
+    this.game.busy = !!this.ingredientTrails.length;
   }
 
   draw(ctx: CanvasRenderingContext2D) {

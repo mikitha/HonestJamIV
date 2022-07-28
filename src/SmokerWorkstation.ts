@@ -9,7 +9,7 @@ export default class SmokerWorkstation implements Workstation {
     draggableObjects = [];
     currentlyDraggedObjects: Array<DraggableObject> = [];
     progress = 0;
-    fullProgress = 20;
+    fullProgress = 5;
     
     smokerFlip = false
     lastSmokerPosition = 0;
@@ -29,19 +29,21 @@ export default class SmokerWorkstation implements Workstation {
     }
   
     startSmoking() {
-        this.smoker.started = true
+      this.smoker.started = true;
+      this.smoker.turn();
+      this.progress = 0;
     }
 
     clickSmoker(){
-        this.smoker.progress = 0
+        if (this.progress < this.fullProgress) this.smoker.turn();
     }
   
     tick(dt: number) {
       this.smoker.tick(dt);
-      
+      if (this.progress >= this.fullProgress) {
+        this.game.currentRecipe.smoked = true;
       }
-    
-  
+    }
   
     draw(ctx: CanvasRenderingContext2D) {
       this.drawsmoker(ctx);
@@ -68,6 +70,7 @@ export default class SmokerWorkstation implements Workstation {
       }
   
       ctx.fillRect(20, 600, this.progress*10, 25);
+      this.game.busy = this.smoker.started && this.progress < this.fullProgress;
   
     }
   
@@ -82,17 +85,20 @@ export default class SmokerWorkstation implements Workstation {
     constructor(readonly workstation: SmokerWorkstation, readonly onClick: () => void) {
       super(workstation, 485, 89, 100, 400, onClick);
     }
+
+    turn() {
+      this.progress = 0;
+    }
   
     tick(dt: number) {
+      if (this.progress === 1) return;
        if (this.started == true){ 
         this.progress += dt/1000
        }
-       if (this.progress >= 1){
-            this.progress = 1;
-            //this.started = false;
+       if (this.progress > 1){
+          this.progress = 1;
+          this.workstation.progress += 1;
        }
-        console.log(this.progress);
-
     }
 
     draw(ctx: CanvasRenderingContext2D): void {
@@ -111,7 +117,7 @@ export default class SmokerWorkstation implements Workstation {
     }
   
     isEnabled(): boolean {
-      return true
+      return this.progress === 1;
     }
   }
   
