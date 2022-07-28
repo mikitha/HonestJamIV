@@ -71,7 +71,6 @@ export default class PresserWorkstation implements Workstation {
     }
 
     this.game.busy = this.progress > 0 && this.progress < this.fullProgress;
-    console.log(this.game.busy)
   }
 }
 
