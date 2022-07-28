@@ -6,10 +6,13 @@ import DraggableObject, { RectangularDraggableObject } from './DraggableObject.j
 import images from './images.js';
 import { potionImage } from './Recipe.js';
 
+import { glerp, clamp, lerp } from './util.js';
+
 export default class PresserWorkstation implements Workstation {
   clickableObjects: Array<ClickableObject> = [];
   draggableObjects = [];
   currentlyDraggedObjects: Array<DraggableObject> = [];
+  drips: Array<PresserDrip> = [];
   progress = 0;
   fullProgress = 20;
   
@@ -32,7 +35,9 @@ export default class PresserWorkstation implements Workstation {
     this.isClicked = false;
   }
 
-  tick(_dt: number) {
+  tick(dt: number) {
+    this.drips = this.drips.filter(d => d.enabled);
+    this.drips.forEach(d => d.tick(dt));
     //let crankPositionChange = this.game.mouseYPosition - this.lastCrankPosition;
     if (this.isClicked){
       this.crank.y = this.game.mouseYPosition;
@@ -46,12 +51,15 @@ export default class PresserWorkstation implements Workstation {
         this.progress += 1
      
         this.crankMovingUp = true
+
+        this.drips.push(new PresserDrip(100, 300, "red"));
     }
 
     if(this.crankBoundaryTop == this.crank.y && this.crankMovingUp == true){
       this.progress += 1
        
         this.crankMovingUp = false
+        this.drips.push(new PresserDrip(100, 300, "red"));
     }
   
     if(this.progress == this.fullProgress){
@@ -61,6 +69,7 @@ export default class PresserWorkstation implements Workstation {
     console.log(this.game.currentRecipe.toString())
     console.log(this.game.currentRecipe)
     }
+
   }
 }
 
@@ -75,6 +84,8 @@ export default class PresserWorkstation implements Workstation {
     ctx.stroke(); 
 
     this.game.currentRecipe.draw(ctx, 150, 400);
+
+    this.drips.forEach(d => d.draw(ctx));
 
     ctx.fillStyle = "lightgrey";
     ctx.fillRect(100, 100, 128, 128);
@@ -124,6 +135,43 @@ class Crank extends RectangularDraggableObject {
 
   isEnabled(): boolean {
     return true
+  }
+}
+
+class PresserDrip {
+  readonly startFallTime = 500;
+  readonly fallDist = 50;
+  readonly endFallTime = 800;
+  readonly maxRadius = 7;
+  x: number;
+  y: number;
+  progress = 0;
+  enabled = true;
+
+  constructor(readonly startX: number, readonly startY: number, readonly color: string) {
+    this.x = startX;
+    this.y = startY;
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    if (!this.enabled) return;
+    const radius = clamp(0, this.maxRadius, lerp(0, this.maxRadius, this.progress * (this.endFallTime / this.startFallTime)));
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  tick(dt: number) {
+    if (!this.enabled) return;
+    const progressMultiplier = 1 / (this.endFallTime);
+    this.progress += dt * progressMultiplier;
+    if (this.progress * this.endFallTime > this.startFallTime) {
+      this.y = glerp(this.startY, this.startY + this.fallDist, ((this.progress * this.endFallTime) - this.startFallTime)/(this.endFallTime - this.startFallTime));
+    }
+    if (this.progress > 1) {
+      this.enabled = false;
+    }
   }
 }
 
