@@ -10,3 +10,6 @@ Animate the smoker ( bachground, plus same-sized images of the front of the smok
 Cauldron scene (scene with back of cauldron, front of cauldron, spoon, shelf of glassware)
 At least one big bottle for the finished potion + its white counterpart
 Customers (some bodies, some heads, some hats)
+
+big arrows to indicate workplace switching
+UI borders for windows
