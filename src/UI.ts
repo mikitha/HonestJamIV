@@ -4,9 +4,13 @@ import images from './images.js';
 import ClickableObject, { RectangularClickableObject } from './ClickableObject.js';
 
 export default class UI {
+  clickableObjects: Array<ClickableObject> = [];
+
   trashcan: RectangularClickableObject;
   trashcanImage = images('ui/trashcan');
-  clickableObjects: Array<ClickableObject> = [];
+
+  leftArrow: NavigationArrow;
+  rightArrow: NavigationArrow;
 
   prompt?: Prompt;
 
@@ -24,7 +28,13 @@ export default class UI {
       this.clickTrashcan.bind(this)
     );
     this.trashcan.isEnabled = () => true;
+
+    this.leftArrow = new NavigationArrow(this, 20, 20, 144, 96, this.clickLeftArrow.bind(this), true);
+    this.rightArrow = new NavigationArrow(this, 220, 20, 144, 96, this.clickRightArrow.bind(this), false);
   };
+
+  clickLeftArrow() { this.game.nextWorkstation(); }
+  clickRightArrow() { this.game.previousWorkstation(); }
 
   clickTrashcan() {
     if (this.prompt) return;
@@ -45,6 +55,8 @@ export default class UI {
 
   draw(ctx: CanvasRenderingContext2D) {
     this.drawTrashcan(ctx);
+    this.leftArrow.draw(ctx);
+    this.rightArrow.draw(ctx);
     this.prompt?.draw(ctx);
     this.drawCurrentRecipe(ctx);
   }
@@ -70,6 +82,17 @@ export default class UI {
     ctx.textBaseline = "middle";
     ctx.fillStyle = "black";
     ctx.fillText(recipe.toString(), canvas.width / 2, canvas.height - marginBottom - (height / 2), dimensions[2]);
+  }
+}
+
+class NavigationArrow extends RectangularClickableObject {
+  enabled = true;
+  constructor(readonly ui: UI, readonly x: number, readonly y: number, readonly w: number, readonly h: number, onClick: () => void, readonly isLeft: boolean) {
+    super(ui, x, y, w, h, onClick);
+  }
+  draw(ctx: CanvasRenderingContext2D) {
+    const img = images('ui/arrows')
+    ctx.drawImage(img, this.isLeft ? 0 : this.w, 0, this.w, this.h, this.x, this.y, this.w, this.h);
   }
 }
 

@@ -15,7 +15,7 @@ export default class Game {
     mouseYPosition: number;
 
     workstations: Array<Workstation>;
-    currentWorkstation: Workstation;
+    currentWorkstationIndex: number;
 
     ui: UI;
 
@@ -71,7 +71,7 @@ export default class Game {
         this.workstations.push(new SmokerWorkstation(this));
         this.workstations.push(new CauldronWorkstation(this));
 
-        this.currentWorkstation = this.workstations[0];
+        this.currentWorkstationIndex = 0;
 
         this.ui = new UI(this);
     }
@@ -79,7 +79,7 @@ export default class Game {
     switchWorkstation(target: number) {
       if (this.ui.prompt || this.busy) return;
       if (this.currentWorkstation.currentlyDraggedObjects.length > 0) return;
-      this.currentWorkstation = this.workstations[target];
+      this.currentWorkstationIndex = target;
     }
 
     run(timestamp: number){
@@ -109,6 +109,13 @@ export default class Game {
         this.lastTimestamp = timestamp
         window.requestAnimationFrame(this.run);
     }
+
+    get currentWorkstation() {
+      return this.workstations[this.currentWorkstationIndex];
+    }
+
+    nextWorkstation() { this.currentWorkstationIndex = (this.currentWorkstationIndex + 1) % this.workstations.length; }
+    previousWorkstation() { this.currentWorkstationIndex = (this.workstations.length + this.currentWorkstationIndex - 1) % this.workstations.length; }
 
     resetCurrentRecipe() {
       this.currentRecipe = new Recipe();
