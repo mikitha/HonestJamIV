@@ -25,6 +25,23 @@ export default class Recipe {
     return true;
   }
 
+  hint(target: Recipe) {
+    if(this.stirred !== target.stirred || this.pressed !== target.pressed || this.smoked !== target.smoked) {
+      return `should be ${target.smokedModifier}${target.pressedModifier}`;
+    }
+    for (let i = 0; i < this.ingredients.length; i++) {
+      if (!target.ingredients.includes(this.ingredients[i])) {
+        return `should not include ${this.ingredients[i].name}`;
+      }
+    }
+    for (let i = 0; i < target.ingredients.length; i++) {
+      if (!this.ingredients.includes(target.ingredients[i])) {
+        return `should include ${target.ingredients[i].name}`;
+      }
+    }
+    return `is correct`;
+  }
+
   get smokedModifier() {
     if (!this.smoked || this.stirred === null) return '';
     if (this.stirred === StirDirection.CLOCKWISE) return 'ENKINDLED ';
