@@ -13,6 +13,7 @@ export default class UI {
   rightArrow: NavigationArrow;
 
   prompt?: Prompt;
+  alert?: Alert;
 
   leftTrashcanMargin = 10;
   bottomTrashcanMargin = 10;
@@ -95,6 +96,36 @@ class NavigationArrow extends RectangularClickableObject {
     ctx.drawImage(img, this.isLeft ? 0 : this.w, 0, this.w, this.h, this.x, this.y, this.w, this.h);
   }
 }
+
+class Alert {
+  textbox: Textbox;
+  confirmButton: ClickableObject;
+
+  constructor(
+    readonly ui: UI,
+    readonly width: number,
+    readonly height: number,
+    readonly text: string,
+    readonly buttonText: string,
+    readonly onClick: () => void,
+  ) {
+    const { x, y } = this.topLeft();
+    this.textbox = new Textbox(images('ui/textbox-2'), 16, 16, [x, y], [width, height], text);
+    this.confirmButton = new PromptButton(
+      ui, x + (3 * width / 8), y + (2 * height / 3), width / 4, height / 4, buttonText, onClick);
+  }
+  
+  topLeft() {
+    const canvas = this.ui.game.canvas;
+    return { x: canvas.width / 2 - this.width / 2, y: canvas.height / 2 - this.height / 2 }
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    this.textbox.draw(ctx);
+    this.confirmButton.draw(ctx);
+  }
+}
+
 
 class Prompt {
   textbox: Textbox;
