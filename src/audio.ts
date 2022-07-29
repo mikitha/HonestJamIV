@@ -47,4 +47,4 @@ function audio(map: AudioMap, name: string): AudioBuffer {
 const bgm = audio.bind(null, _bgm);
 const sfx = audio.bind(null, _sfx);
 
-export { bgm, sfx, load }
+export { bgm, sfx, load, audioCtx }
