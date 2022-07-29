@@ -114,8 +114,8 @@ export default class Game {
       return this.workstations[this.currentWorkstationIndex];
     }
 
-    nextWorkstation() { this.currentWorkstationIndex = (this.currentWorkstationIndex + 1) % this.workstations.length; }
-    previousWorkstation() { this.currentWorkstationIndex = (this.workstations.length + this.currentWorkstationIndex - 1) % this.workstations.length; }
+    nextWorkstation() { this.switchWorkstation((this.currentWorkstationIndex + 1) % this.workstations.length); }
+    previousWorkstation() { this.switchWorkstation((this.workstations.length + this.currentWorkstationIndex - 1) % this.workstations.length); }
 
     resetCurrentRecipe() {
       this.currentRecipe = new Recipe();
