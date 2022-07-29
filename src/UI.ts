@@ -1,6 +1,6 @@
 import Game from './Game.js';
 import images from './images.js';
-
+import Textbox from './Textbox.js';
 import ClickableObject, { RectangularClickableObject } from './ClickableObject.js';
 
 export default class UI {
@@ -97,6 +97,7 @@ class NavigationArrow extends RectangularClickableObject {
 }
 
 class Prompt {
+  textbox: Textbox;
   confirmButton: ClickableObject;
   cancelButton: ClickableObject;
   constructor(
@@ -110,6 +111,7 @@ class Prompt {
     readonly onCancel: () => void,
   ) {
     const { x, y } = this.topLeft();
+    this.textbox = new Textbox(images('ui/textbox-2'), 16, 16, [x, y], [width, height], text);
     this.confirmButton = new PromptButton(
       ui, x + (1 * width / 8), y + (2 * height / 3), width / 4, height / 4, confirmText, onConfirm);
     this.cancelButton = new PromptButton(
@@ -122,19 +124,15 @@ class Prompt {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    const { x, y } = this.topLeft();
-    ctx.strokeRect(x, y, this.width, this.height);
-    ctx.textAlign = 'center';
-    ctx.font = "40pt sans-serif";
-    ctx.fillStyle = "black";
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillText(this.text, x + this.width / 2, y + this.height / 3, this.width);
+    this.textbox.draw(ctx);
     this.confirmButton.draw(ctx);
     this.cancelButton.draw(ctx);
   }
 }
 
 class PromptButton extends RectangularClickableObject {
+  textbox: Textbox;
+  hoverTextbox: Textbox;
   constructor (
     readonly ui: UI,
     readonly x: number,
@@ -145,19 +143,15 @@ class PromptButton extends RectangularClickableObject {
     readonly onClick: () => void,
   ) {
       super(ui, x, y, width, height, onClick);
+      this.textbox = new Textbox(images('ui/textbox-1a'), 10, 10, [x, y], [width, height], text);
+      this.hoverTextbox = new Textbox(images('ui/textbox-1'), 10, 10, [x, y], [width, height], text);
   }
 
   isEnabled() { return true; }
 
   draw(ctx:CanvasRenderingContext2D) {
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
-    ctx.fillStyle = this.isHovering() ? "blue" : "white";
-    ctx.fillRect(this.x, this.y, this.width, this.height);
-
-    ctx.fillStyle = this.isHovering() ? "white" : "blue";
-    ctx.font = '30pt sans-serif';
-    ctx.textBaseline = 'bottom';
-    ctx.fillText(this.text, this.x + this.width / 2, this.y + this.height, this.width);
+    this.isHovering() ? this.textbox.draw(ctx) : this.hoverTextbox.draw(ctx);
+    return;
   }
 }
 

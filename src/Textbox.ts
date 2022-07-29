@@ -9,6 +9,8 @@ export default class Textbox {
   ) {}
 
   draw(ctx: CanvasRenderingContext2D, offset: [number, number] = [0, 0]) {
+    const ctxis = ctx.imageSmoothingEnabled;
+    ctx.imageSmoothingEnabled = false;
     const x = this.position[0] + offset[0];
     const y = this.position[1] + offset[1];
     const [w, h] = this.size;
@@ -61,6 +63,7 @@ export default class Textbox {
     for (let i = 0; i < pieces; i++) {
       ctx.fillText(splitText[i], x + cornerWidth, y + cornerHeight + (fontHeight * i));
     }
+    ctx.imageSmoothingEnabled = ctxis;
   }
 }
 
