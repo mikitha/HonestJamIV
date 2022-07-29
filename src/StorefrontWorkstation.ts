@@ -80,6 +80,7 @@ class Customer extends RectangularClickableObject {
     this.onClick = this.displayMessage.bind(this);
   }
   displayMessage() { this.messageDisplayed = !this.messageDisplayed; }
+  shush() { this.messageDisplayed = false; }
   draw(ctx:CanvasRenderingContext2D) {
     ctx.fillStyle = this.outfit;
     ctx.fillRect(300, 300, 200, 300);
