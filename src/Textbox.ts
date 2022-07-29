@@ -65,8 +65,9 @@ export default class Textbox {
 
 function split(text: string, pieces: number) {
   const arr = [];
+  const words = text.split(' ');
   for (let i = 0; i < pieces; i++) {
-    arr.push(text.slice(Math.ceil(i * (text.length / pieces)), Math.ceil((i + 1) * (text.length / pieces))));
+    arr.push(words.slice(Math.ceil(i * (words.length / pieces)), Math.ceil((i + 1) * (words.length / pieces))));
   }
-  return arr
+  return arr.map(line => line.join(' ')).flat(1);
 }
