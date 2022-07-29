@@ -27,6 +27,11 @@ export default class SmokerWorkstation implements Workstation {
       this.startButton.isEnabled = () => true
       this.startButton.hover = new Hover(this.game, "Start the smoker");
     }
+
+    reset() {
+      this.progress = 0;
+      this.smoker.started = false;
+    }
   
     startSmoking() {
       this.smoker.started = true;

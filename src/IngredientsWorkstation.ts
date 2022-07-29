@@ -27,6 +27,8 @@ export default class IngredientsWorkstation implements Workstation {
     this.createIngredientHolder(320, 520, ingredients.lavender);
   }
 
+  reset() {}
+
   createIngredientHolder(x: number, y: number, ing: Ingredient) {
     const ih = new IngredientHolder(this, x, y, ing);
     ih.closeDoor();
@@ -62,11 +64,12 @@ class IngredientDoor extends RectangularClickableObject {
     readonly onClick: () => void,
   ) {
     super(workstation, x, y, w, h, onClick);
-    this.hover = new Hover(workstation.game, ing.description);
+    if (h > w) this.hover = new Hover(workstation.game, ing.description);
   }
 }
 
 class IngredientPile extends IngredientDoor {
+  hover = new Hover(this.workstation.game, this.ing.name);
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = this.ing.colors[0];
     ctx.fillRect(this.x, this.y, this.w, this.h);

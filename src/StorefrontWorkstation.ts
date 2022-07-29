@@ -21,6 +21,9 @@ export default class StorefrontWorkstation implements Workstation {
     this.frontDoor = new FrontDoor(this, 600, 200, 200, 300, this.summonCustomer.bind(this));
   }
 
+  reset() {
+  }
+
   tick(_dt: number) {
   }
 

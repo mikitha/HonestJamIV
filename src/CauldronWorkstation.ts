@@ -22,7 +22,14 @@ export default class CauldronWorkstation implements Workstation {
     this.spoon = new Spoon(this, this.onMouseDownSpoon.bind(this), () => {});
   }
 
+  reset() {
+    this.progress = 0;
+    this.started = false;
+  }
+
   onMouseDownSpoon() {
+    if (this.progress >= 300 || this.progress <= -300) return;
+    this.started = true;
     this.spoonOffsetX = this.spoon.x - this.game.mouseXPosition;
     this.spoonOffsetY = this.spoon.y - this.game.mouseYPosition;
   }

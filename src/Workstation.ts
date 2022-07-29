@@ -5,6 +5,7 @@ import Game from './Game.js';
 interface Workstation {
   tick(dt: number): void,
   draw(ctx: CanvasRenderingContext2D): void,
+  reset(): void,
   clickableObjects: Array<ClickableObject>,
   draggableObjects: Array<DraggableObject>,
   currentlyDraggedObjects: Array<DraggableObject>,

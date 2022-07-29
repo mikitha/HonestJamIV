@@ -1,7 +1,8 @@
 import Workstation from './Workstation.js';
 import Game from './Game.js';
-import ClickableObject from './ClickableObject.js';
+import ClickableObject, { RectangularClickableObject } from './ClickableObject.js';
 import DraggableObject, { RectangularDraggableObject } from './DraggableObject.js';
+import Hover from './Hover.js';
 
 import images from './images.js';
 import { potionImage } from './Recipe.js';
@@ -13,8 +14,11 @@ export default class PresserWorkstation implements Workstation {
   draggableObjects = [];
   currentlyDraggedObjects: Array<DraggableObject> = [];
   drips: Array<PresserDrip> = [];
+  started = false;
   progress = 0;
   fullProgress = 20;
+
+  startButton: RectangularClickableObject;
   
   lastCrankPosition = 0;
   crankBoundaryTop = 100;
@@ -25,6 +29,19 @@ export default class PresserWorkstation implements Workstation {
 
   constructor(readonly game: Game) {
     this.crank = new Crank(this, this.onMouseDownCrank.bind(this), this.onMouseUpCrank.bind(this));
+    this.startButton = new RectangularClickableObject(this, 100, 500, 50, 25, this.startPresser.bind(this));
+    this.startButton.enabled = true;
+    this.startButton.hover = new Hover(this.game, "Start the Presser");
+  }
+
+  reset() {
+    this.progress = 0;
+    this.started = false;
+  }
+
+  startPresser() {
+    this.progress = 0;
+    this.started = true;
   }
 
   onMouseDownCrank() {
@@ -63,18 +80,16 @@ export default class PresserWorkstation implements Workstation {
     }
   
     if(this.progress == this.fullProgress){
-
-    console.log("done!")
-    this.game.currentRecipe.pressed = true
-    console.log(this.game.currentRecipe.toString())
-    console.log(this.game.currentRecipe)
+      this.game.currentRecipe.pressed = true
+      this.started = false;
     }
 
-    this.game.busy = this.progress > 0 && this.progress < this.fullProgress;
+    this.game.busy = this.started;
   }
 }
 
   draw(ctx: CanvasRenderingContext2D) {
+    this.startButton.draw(ctx);
     this.drawCrank(ctx);
     this.drawProgress(ctx);
     ctx.beginPath();       // Start a new path
@@ -135,7 +150,7 @@ class Crank extends RectangularDraggableObject {
   }
 
   isEnabled(): boolean {
-    return true
+    return this.workstation.started;
   }
 }
 

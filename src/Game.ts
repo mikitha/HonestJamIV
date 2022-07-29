@@ -119,6 +119,7 @@ export default class Game {
 
     resetCurrentRecipe() {
       this.currentRecipe = new Recipe();
+      this.workstations.forEach(ws => ws.reset());
     }
 
     setCurrentOrder(order: Order) {

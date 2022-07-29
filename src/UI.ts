@@ -27,7 +27,7 @@ export default class UI {
       tci.height,
       this.clickTrashcan.bind(this)
     );
-    this.trashcan.isEnabled = () => true;
+    this.trashcan.isEnabled = () => !this.game.busy;
 
     this.leftArrow = new NavigationArrow(this, 20, 20, 144, 96, this.clickLeftArrow.bind(this), true);
     this.rightArrow = new NavigationArrow(this, 220, 20, 144, 96, this.clickRightArrow.bind(this), false);
