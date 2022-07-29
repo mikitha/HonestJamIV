@@ -4,6 +4,8 @@ import Workstation from './Workstation.js';
 import ClickableObject, { RectangularClickableObject } from './ClickableObject.js';
 import DraggableObject from './DraggableObject.js';
 
+import images from './images.js';
+import Textbox from './Textbox.js';
 import Order from './Order.js';
 
 import { chooseRandom } from './util.js';
@@ -85,16 +87,8 @@ class Customer extends RectangularClickableObject {
     ctx.fill();
 
     if (!this.messageDisplayed) return;
-    ctx.fillStyle = "ghostwhite";
-    ctx.strokeStyle = "black";
-    ctx.fillRect(100, 100, 400, 150);
-    ctx.strokeRect(100, 100, 400, 150);
-
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.font = "30pt sans-serif";
-    ctx.fillStyle = "black";
-    ctx.fillText(this.greeting[0] + this.order.description + this.greeting[1], 300, 175, 400)
+    const message = this.greeting[0] + this.order.description + this.greeting[1];
+    new Textbox(images('ui/textbox-0'), 64, 32, [100, 100], [448, 160], message).draw(ctx);
   }
 
   static random(ws: Workstation) {

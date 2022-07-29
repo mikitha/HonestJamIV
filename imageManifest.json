@@ -2,6 +2,7 @@
   "potion-bottle-empty": "images/potion-bottle-empty.png",
   "potion-white": "images/potion-white.png",
   "ui": {
+    "textbox-0": "images/ui/textbox-0.png",
     "trashcan": "images/ui/trashcan.png"
   }
 }
