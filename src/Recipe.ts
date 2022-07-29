@@ -14,6 +14,17 @@ export default class Recipe {
   smoked = false;
   stirred : StirDirection | null = null;
 
+  equals(other: Recipe) {
+    if (this.ingredients.length != other.ingredients.length) return false;
+    for(let i = 0; i < this.ingredients.length; i++) {
+      if (!this.ingredients.includes(other.ingredients[i])) return false;
+    }
+    if (this.pressed !== other.pressed) return false;
+    if (this.smoked !== other.smoked) return false;
+    if (this.stirred !== other.stirred) return false;
+    return true;
+  }
+
   get smokedModifier() {
     if (!this.smoked || this.stirred === null) return '';
     if (this.stirred === StirDirection.CLOCKWISE) return 'ENKINDLED ';

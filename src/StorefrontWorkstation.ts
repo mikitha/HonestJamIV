@@ -17,7 +17,9 @@ export default class StorefrontWorkstation implements Workstation {
     this.frontDoor = new FrontDoor(this, 600, 200, 200, 300, this.summonCustomer.bind(this));
   }
 
-  tick(dt: number) {}
+  tick(_dt: number) {
+  }
+
   draw(ctx: CanvasRenderingContext2D) {
     this.clickableObjects.forEach(co => co.draw(ctx));
     this.customer?.draw(ctx);
