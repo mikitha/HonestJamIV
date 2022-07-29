@@ -35,7 +35,7 @@ export default class UI {
   };
 
   fireAlert(text:string) {
-    this.alert = new Alert(this, 400, 50, text, "Okay", this.closeAlert.bind(this));
+    this.alert = new Alert(this, 400, 150, text, "Okay", this.closeAlert.bind(this));
   }
 
   closeAlert() {
@@ -72,6 +72,7 @@ export default class UI {
       this.rightArrow.draw(ctx);
     }
     this.prompt?.draw(ctx);
+    this.alert?.draw(ctx);
     this.drawCurrentRecipe(ctx);
   }
 

@@ -40,6 +40,10 @@ export default class PresserWorkstation implements Workstation {
   }
 
   startPresser() {
+    if (!this.game.currentRecipe.ingredients.length) {
+      this.game.alert("Can't start the presser without ingredients");
+      return;
+    }
     this.progress = 0;
     this.started = true;
   }

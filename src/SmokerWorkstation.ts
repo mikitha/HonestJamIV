@@ -34,6 +34,10 @@ export default class SmokerWorkstation implements Workstation {
     }
   
     startSmoking() {
+      if (!this.game.currentRecipe.ingredients.length) {
+        this.game.alert("Can't start the smoker without ingredients");
+        return;
+      }
       this.smoker.started = true;
       this.smoker.turn();
       this.progress = 0;

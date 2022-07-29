@@ -44,18 +44,21 @@ export default class Game {
           }
 
           if (this.ui.prompt) return;
+          if (this.ui.alert) return;
 
           this.currentWorkstation.clickableObjects.filter(co => co.isEnabled() && co.isHovering()).forEach(co => co.onClick());
         });
 
         window.addEventListener('mousedown', _ev => {
           if (this.ui.prompt) return;
+          if (this.ui.alert) return;
           this.currentWorkstation.currentlyDraggedObjects = this.currentWorkstation.draggableObjects.filter(dgo => dgo.isEnabled() && dgo.isHovering());
           this.currentWorkstation.currentlyDraggedObjects.forEach(dgo => dgo.onMouseDown());
         });
 
         window.addEventListener('mouseup', _ev => {
           if (this.ui.prompt) return;
+          if (this.ui.alert) return;
           this.currentWorkstation.currentlyDraggedObjects.forEach(dgo => dgo.onMouseUp());
           this.currentWorkstation.currentlyDraggedObjects = [];
         });
@@ -77,7 +80,7 @@ export default class Game {
     }
 
     switchWorkstation(target: number) {
-      if (this.ui.prompt || this.busy) return;
+      if (this.ui.prompt || this.ui.alert || this.busy) return;
       if (this.currentWorkstation.currentlyDraggedObjects.length > 0) return;
       const sfws = this.workstations.find(ws => ws instanceof StorefrontWorkstation) as StorefrontWorkstation;
       sfws?.customer?.shush();

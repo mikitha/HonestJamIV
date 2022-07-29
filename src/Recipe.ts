@@ -8,7 +8,7 @@ enum StirDirection {
 }
 
 export default class Recipe {
-  private ingredients: Array<Ingredient> = [];
+  ingredients: Array<Ingredient> = [];
   ingredientPositions: Array<IngredientPosition> = [];
   pressed = false;
   smoked = false;
