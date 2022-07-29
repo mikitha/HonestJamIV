@@ -119,6 +119,10 @@ export default class Game {
     nextWorkstation() { this.switchWorkstation((this.currentWorkstationIndex + 1) % this.workstations.length); }
     previousWorkstation() { this.switchWorkstation((this.workstations.length + this.currentWorkstationIndex - 1) % this.workstations.length); }
 
+    alert(text: string) {
+      this.ui.fireAlert(text);
+    }
+
     resetCurrentRecipe() {
       this.currentRecipe = new Recipe();
       this.workstations.forEach(ws => ws.reset());

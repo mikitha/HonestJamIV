@@ -34,6 +34,17 @@ export default class UI {
     this.rightArrow = new NavigationArrow(this, 220, 20, 144, 96, this.clickRightArrow.bind(this), false);
   };
 
+  fireAlert(text:string) {
+    this.alert = new Alert(this, 400, 50, text, "Okay", this.closeAlert.bind(this));
+  }
+
+  closeAlert() {
+    if (!this.alert) return;
+    const { confirmButton } = this.alert;
+    this.clickableObjects.splice(this.clickableObjects.indexOf(confirmButton), 1);
+    this.alert = undefined;
+  }
+
   clickLeftArrow() { this.game.nextWorkstation(); }
   clickRightArrow() { this.game.previousWorkstation(); }
 
@@ -55,9 +66,11 @@ export default class UI {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    this.drawTrashcan(ctx);
-    this.leftArrow.draw(ctx);
-    this.rightArrow.draw(ctx);
+    if (!this.game.busy) {
+      this.drawTrashcan(ctx);
+      this.leftArrow.draw(ctx);
+      this.rightArrow.draw(ctx);
+    }
     this.prompt?.draw(ctx);
     this.drawCurrentRecipe(ctx);
   }
