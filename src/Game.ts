@@ -124,6 +124,13 @@ export default class Game {
       this.workstations.forEach(ws => ws.reset());
     }
 
+    potionSold = false;
+    sellPotion() {
+      this.potionSold = true;
+      this.busy = true;
+      this.currentRecipe = new Recipe();
+    }
+
     setCurrentOrder(order: Order) {
       this.currentOrder = order;
     }

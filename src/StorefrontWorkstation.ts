@@ -33,8 +33,14 @@ export default class StorefrontWorkstation implements Workstation {
   }
 
   summonCustomer() {
+    this.game.busy = false;
+    this.game.potionSold = false;
     this.clickableObjects = this.clickableObjects.filter(co => !(co instanceof Customer));
-    this.customer = Customer.random(this);
+    if (this.customer) {
+      this.customer = undefined;
+    } else {
+      this.customer = Customer.random(this);
+    }
   }
 
   get order() {
@@ -71,16 +77,33 @@ const GREETINGS: Array<[string, string]> = [
   ["Greetings, I'm looking for ", "."],
   ["I need ", ", if you don't mind!"],
 ];
+const INQUIRIES: Array<[string, string]> = [
+  ["How is the ", " coming along?"],
+  ["Please hurry up with the ", "."],
+  ["You'll be able to make ", ", right?"],
+];
 
 class Customer extends RectangularClickableObject {
   enabled = true;
   messageDisplayed = false;
-  constructor(readonly ws: Workstation, readonly outfit: string, readonly skin: string, readonly greeting: [string, string], readonly order: Order) {
+  greetingDisplayed = true;
+  constructor(
+    readonly ws: Workstation,
+    readonly outfit: string,
+    readonly skin: string,
+    readonly greeting: [string, string],
+    readonly inquiry: [string, string],
+    readonly order: Order,
+  ) {
     super(ws, 300, 200, 200, 400, () => {}); 
     this.onClick = this.displayMessage.bind(this);
   }
-  displayMessage() { this.messageDisplayed = !this.messageDisplayed; }
-  shush() { this.messageDisplayed = false; }
+  displayMessage() {
+    if (this.messageDisplayed) this.greetingDisplayed = false;
+    if(this.order.isCorrect(this.game.currentRecipe)) this.game.sellPotion();
+    this.messageDisplayed = !this.messageDisplayed;
+  }
+  shush() { this.greetingDisplayed = false; this.messageDisplayed = false; }
   draw(ctx:CanvasRenderingContext2D) {
     ctx.fillStyle = this.outfit;
     ctx.fillRect(300, 300, 200, 300);
@@ -91,11 +114,23 @@ class Customer extends RectangularClickableObject {
     ctx.fill();
 
     if (!this.messageDisplayed) return;
-    const message = this.greeting[0] + this.order.description + this.greeting[1];
-    new Textbox(images('ui/textbox-0'), 64, 32, [100, 100], [448, 160], message).draw(ctx);
+    
+    new Textbox(images('ui/textbox-0'), 64, 32, [100, 100], [448, 160], this.message).draw(ctx);
+  }
+
+  get message() {
+    if (this.game.potionSold) {
+      return "Thanks!";
+    } else if (this.greetingDisplayed) {
+      return this.greeting[0] + this.order.description + this.greeting[1];
+    } else if (!this.game.currentRecipe.isComplete()) {
+      return this.inquiry[0] + this.order.description + this.inquiry[1];
+    } else  {
+      return this.game.currentRecipe.hint(this.order.recipes[0]);
+    }
   }
 
   static random(ws: Workstation) {
-    return new Customer(ws, chooseRandom(OUTFIT_COLORS), chooseRandom(SKIN_COLORS), chooseRandom(GREETINGS), Order.get());
+    return new Customer(ws, chooseRandom(OUTFIT_COLORS), chooseRandom(SKIN_COLORS), chooseRandom(GREETINGS), chooseRandom(INQUIRIES), Order.get());
   }
 }

@@ -42,6 +42,10 @@ export default class Recipe {
     return `is correct`;
   }
 
+  isComplete() {
+    return this.stirred !== null;
+  }
+
   get smokedModifier() {
     if (!this.smoked || this.stirred === null) return '';
     if (this.stirred === StirDirection.CLOCKWISE) return 'ENKINDLED ';
