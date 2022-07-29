@@ -1,4 +1,5 @@
 import Workstation from './Workstation.js';
+import StorefrontWorkstation from './StorefrontWorkstation.js';
 import PresserWorkstation from './PresserWorkstation.js';
 import IngredientsWorkstation from './IngredientsWorkstation.js';
 import CauldronWorkstation from './CauldronWorkstation.js';
@@ -62,12 +63,13 @@ export default class Game {
         this.currentRecipe = new Recipe();
 
         this.workstations = [];
+        this.workstations.push(new StorefrontWorkstation(this));
         this.workstations.push(new IngredientsWorkstation(this));
         this.workstations.push(new PresserWorkstation(this));
-        this.workstations.push(new CauldronWorkstation(this));
         this.workstations.push(new SmokerWorkstation(this));
+        this.workstations.push(new CauldronWorkstation(this));
 
-        this.currentWorkstation = this.workstations[1];
+        this.currentWorkstation = this.workstations[0];
 
         this.ui = new UI(this);
     }
@@ -92,6 +94,9 @@ export default class Game {
         }
         if(isControlPressed(Controls.WORKSPACE_4)){
             this.switchWorkstation(3)
+        }
+        if(isControlPressed(Controls.WORKSPACE_5)){
+            this.switchWorkstation(4)
         }
         this.currentWorkstation.tick(dt);
 
