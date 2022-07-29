@@ -4,6 +4,8 @@ import Workstation from './Workstation.js';
 import ClickableObject, { RectangularClickableObject } from './ClickableObject.js';
 import DraggableObject from './DraggableObject.js';
 
+import Order from './Order.js';
+
 import { chooseRandom } from './util.js';
 
 export default class StorefrontWorkstation implements Workstation {
@@ -26,7 +28,12 @@ export default class StorefrontWorkstation implements Workstation {
   }
 
   summonCustomer() {
-    this.customer = Customer.random();
+    this.clickableObjects = this.clickableObjects.filter(co => !(co instanceof Customer));
+    this.customer = Customer.random(this);
+  }
+
+  get order() {
+    return this.customer?.order;
   }
 }
 
@@ -54,8 +61,20 @@ const SKIN_COLORS = [
   "chocolate",
 ];
 
-class Customer {
-  constructor(readonly outfit: string, readonly skin: string) {}
+const GREETINGS: Array<[string, string]> = [
+  ["Hello! Could you make me ", "?"],
+  ["Greetings, I'm looking for ", "."],
+  ["I need ", ", if you don't mind!"],
+];
+
+class Customer extends RectangularClickableObject {
+  enabled = true;
+  messageDisplayed = false;
+  constructor(readonly ws: Workstation, readonly outfit: string, readonly skin: string, readonly greeting: [string, string], readonly order: Order) {
+    super(ws, 300, 200, 200, 400, () => {}); 
+    this.onClick = this.displayMessage.bind(this);
+  }
+  displayMessage() { this.messageDisplayed = !this.messageDisplayed; }
   draw(ctx:CanvasRenderingContext2D) {
     ctx.fillStyle = this.outfit;
     ctx.fillRect(300, 300, 200, 300);
@@ -64,9 +83,21 @@ class Customer {
     ctx.beginPath();
     ctx.arc(400, 300 - 25, 75, 0, 2 * Math.PI);
     ctx.fill();
+
+    if (!this.messageDisplayed) return;
+    ctx.fillStyle = "ghostwhite";
+    ctx.strokeStyle = "black";
+    ctx.fillRect(100, 100, 400, 150);
+    ctx.strokeRect(100, 100, 400, 150);
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "30pt sans-serif";
+    ctx.fillStyle = "black";
+    ctx.fillText(this.greeting[0] + this.order.description + this.greeting[1], 300, 175, 400)
   }
 
-  static random() {
-    return new Customer(chooseRandom(OUTFIT_COLORS), chooseRandom(SKIN_COLORS));
+  static random(ws: Workstation) {
+    return new Customer(ws, chooseRandom(OUTFIT_COLORS), chooseRandom(SKIN_COLORS), chooseRandom(GREETINGS), Order.get());
   }
 }

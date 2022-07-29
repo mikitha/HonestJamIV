@@ -8,6 +8,7 @@ import SmokerWorkstation from './SmokerWorkstation.js'
 import UI from './UI.js';
 import { isControlPressed, Controls } from './keyboardInput.js';
 import Recipe from './Recipe.js';
+import Order from './Order.js';
 
 export default class Game {
     mouseXPosition: number;
@@ -19,6 +20,7 @@ export default class Game {
     ui: UI;
 
     currentRecipe: Recipe;
+    currentOrder?: Order;
 
     busy = false;
 
@@ -110,5 +112,9 @@ export default class Game {
 
     resetCurrentRecipe() {
       this.currentRecipe = new Recipe();
+    }
+
+    setCurrentOrder(order: Order) {
+      this.currentOrder = order;
     }
 }

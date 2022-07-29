@@ -22,7 +22,7 @@ class RectangularClickableObject implements ClickableObject {
     public y: number, 
     public w: number, 
     public h: number, 
-    readonly onClick: () => void,
+    public onClick: () => void,
   ) {
     this.game = workstation.game;
     this.workstation.clickableObjects.push(this);
