@@ -8,8 +8,9 @@ export default class Textbox {
     readonly text: string
   ) {}
 
-  draw(ctx: CanvasRenderingContext2D) {
-    const [x, y] = this.position;
+  draw(ctx: CanvasRenderingContext2D, offset: [number, number] = [0, 0]) {
+    const x = this.position[0] + offset[0];
+    const y = this.position[1] + offset[1];
     const [w, h] = this.size;
     // TODO maybe modify w and h to be multiples of boxEdge measurements
     
