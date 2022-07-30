@@ -19,6 +19,9 @@ window.addEventListener('load', async () => {
     const bufferSource = audioCtx.createBufferSource();
     bufferSource.buffer = bgm('swish');
     bufferSource.connect(gainNode);
+    bufferSource.loop = true;
+    bufferSource.loopStart = 21.452;
+    bufferSource.loopEnd = bufferSource.buffer.duration
     gainNode.connect(audioCtx.destination);
     bufferSource.start(0);
   };
