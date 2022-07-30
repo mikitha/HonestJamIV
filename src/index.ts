@@ -8,6 +8,12 @@ window.addEventListener('load', async () => {
   await loadImages();
   await loadAudio();
   document.querySelector('#loading')?.remove();
+
+  (document.querySelector('#startScreen') as HTMLDivElement).style.display = "flex";
+  await new Promise(resolve => {
+    document.querySelector('#startButton')?.addEventListener('click', resolve)
+  })
+
   const startAudio = () => {
     const gainNode = audioCtx.createGain();
     const bufferSource = audioCtx.createBufferSource();
@@ -15,14 +21,15 @@ window.addEventListener('load', async () => {
     bufferSource.connect(gainNode);
     gainNode.connect(audioCtx.destination);
     bufferSource.start(0);
-    canvas.removeEventListener('click', startAudio);
   };
+  startAudio()
+  document.querySelector('#startScreen')?.remove();
+
 
   canvas = document.createElement('canvas');
   document.body.appendChild(canvas);
   resizeCanvas();
 
-  canvas.addEventListener('click', startAudio)
 
   new Game(canvas).run(0)
 });
