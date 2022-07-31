@@ -1,0 +1,3 @@
+#!/bin/sh
+
+zip -r toil-and-trouble-2.zip audio bgmManifest.json dist imageManifest.json images index.html sfxManifest.json style.css
